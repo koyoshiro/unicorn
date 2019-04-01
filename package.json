@@ -1,0 +1,24 @@
+{
+  "name": "phoenix",
+  "version": "0.0.1",
+  "description": "a react mvvm framework",
+  "scripts": {
+    "tsb": "echo '{\"env\": \"build\"}' > ./env.json && tsc --outDir ./dest || true"
+    },
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "react": "16.0.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "styled-components": "^4.0.2",
+    "husky": "^0.14.3",
+    "tslint": "^5.10.0",
+    "tslint-config-airbnb": "^5.8.0",
+    "tslint-eslint-rules": "^5.3.1",
+    "tslint-react": "^3.6.0",
+    "typescript": "^2.8.3"
+  },
+  "main": "./dest/index.js"
+}
