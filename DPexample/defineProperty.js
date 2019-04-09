@@ -1,23 +1,22 @@
 class Dep {
   constructor() {
-    this.deps = []
+    this.deps = [];
   }
 
   depend() {
-    console.log(this.deps);
     if (Dep.target && this.deps.indexOf(Dep.target) === -1) {
-      this.deps.push(Dep.target)
+      this.deps.push(Dep.target);
     }
   }
 
   notify() {
     this.deps.forEach((dep) => {
-      dep()
+      dep();
     })
   }
 }
 
-Dep.target = null
+Dep.target = null;
 
 class Observable {
   constructor(obj) {
@@ -117,33 +116,39 @@ class Watcher {
   }
 }
 
+
+
 const hero = new Observable({
-  health: 3000,
-  IQ: 150,
+  name: '赵云',
+  hp: 3000,
+  sp: 150,
   equipment: ['马', '长枪']
-})
+});
 
-new Watcher(hero, 'type', () => {
-  return hero.health > 4000 ? '坦克' : '脆皮'
+new Watcher(hero, 'health', () => {
+  return hero.hp > 2000 ? '强壮' : '良好';
 }, (val) => {
-  console.log(`我的类型是：${val}`)
-})
+  console.log(`英雄的健康状况是：${val}`);
+});
 
-new Watcher(hero, 'type2', () => {
-  return hero.health === 5000 ? 'AAA' : 'BBB'
+new Watcher(hero, 'job', () => {
+  return hero.sp < 3000 ? '武将' : '谋士'
 }, (val) => {
-  console.log(`我的类型2是：${val}`)
-})
+  console.log(`英雄的职业是：${val}`);
+});
 
-new Watcher(hero, 'eq', () => {
+new Watcher(hero, 'weapon', () => {
   return hero.equipment;
 }, (val) => {
-  console.log(`我的eq是：${val}`)
-})
+  console.log(`英雄的武器是：${val}`);
+});
 
-console.log(`英雄初始类型：${hero.type}`)
-console.log(`英雄初始类型2：${hero.type2}`)
-console.log(`英雄初始类型3：${hero.eq}`)
+console.log(`英雄初始健康状况：${hero.health}`);
+console.log(`英雄初始职业：${hero.job}`);
+console.log(`英雄初始武器：${hero.weapon}`);
 
-hero.health = 5000;
-hero.equipment.push('ccc');
+hero.name = '诸葛亮';
+console.log(`英雄的名字是：${hero.name}`);
+hero.hp = 1000;
+hero.sp = 4000;
+hero.equipment.push('羽扇');
