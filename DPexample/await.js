@@ -1,15 +1,4 @@
-// import Observable from './observable';
-// import Watcher from './watcher';
-// import autoRun from './autoRun';
-
-const hero = {
-    name: '赵云',
-    hp: 100,
-    sp: 100,
-    equipment: ['马', '长枪']
-  }
-  
-  const autoRun = function (handler) {
+const autoRun = function (handler) {
     handler();
   };
   
@@ -18,23 +7,29 @@ const hero = {
       this.deps = new Set();
     }
   
-    depend() {
-      this.deps.add(Dep.target);
-    }
-  
-    async notify(notifyIndex) {
-      await console.log('wait');
-      if (Dep.index === notifyIndex) {
-        Dep.index = 0;
-        this.deps.forEach((dep) => {
-          dep();
+    depend(key) {
+      if (Dep.target) {
+        this.deps.add({
+          key,
+          target: Dep.target
         });
       }
     }
+  
+    async notify(key) {
+      this.deps.forEach((dep) => {
+        if (dep.key === key && dep.target) {
+          dep.target();
+        }
+      });
+      await Dep.computeArray.clear();
+    }
+  
+  
   }
   
   Dep.target = null;
-  Dep.index = 0;
+  Dep.computeArray = new Set();
   
   class Observable {
     constructor(obj) {
@@ -47,7 +42,7 @@ const hero = {
         get(target, key, receiver) {
           // console.log(`我的${key}属性被读取了！`);
           // 加入观察者队列 
-          dep.depend();
+          dep.depend(key);
           return Reflect.get(target, key, receiver);
         },
         set(target, key, value, receiver) {
@@ -55,7 +50,7 @@ const hero = {
           //内部调用对应的 Reflect 方法
           const result = Reflect.set(target, key, value, receiver);
           //执行观察者队列
-          dep.notify(Dep.index);
+          dep.notify(key);
           return result;
         }
       }
@@ -69,24 +64,29 @@ const hero = {
       this.key = key;
       this.callback = callback;
       this.onComputedUpdate = onComputedUpdate;
+      this.idx = 0;
       return this._defineComputed();
     }
   
     _defineComputed() {
-      const self = this
-      const onDepUpdated = () => {
-        const val = self.callback();
-        this.onComputedUpdate(val);
+      const self = this;
+      const onDepUpdated = async (key) => {
+        await console.log('wait');
+  
+        if (!Dep.computeArray.has(key)) {
+          Dep.computeArray.add(key);
+          const val = self.callback();
+          this.onComputedUpdate(val);
+        }
       }
   
       const handler = {
         get(target, key, receiver) {
           console.log(`我的${key}属性被读取了！`);
-          Dep.target = onDepUpdated;
-          Dep.index++;
-          const val = self.callback()
+          Dep.target = () => { onDepUpdated(key) };
+          const val = self.callback();
           Dep.target = null;
-          return val
+          return val;
         },
         set() {
           console.error('计算属性无法被赋值！')
@@ -97,30 +97,38 @@ const hero = {
     }
   }
   
+  const hero = {
+    name: '赵云',
+    hp: 100,
+    sp: 100,
+    equipment: ['马', '长枪']
+  }
   
-  // const heroObs = new Observable(hero);
+  const heroObs = new Observable(hero);
   
-  // const heroW = new Watcher(heroObs, 'type', () => {
-  //   return heroObs.hp > 4000 ? '坦克' : '脆皮'
-  // }, (val) => {
-  //   console.log(`我的属性是：${val}`);
-  // });
+  const heroHealth = new Watcher(heroObs, 'health', () => {
+    return heroObs.hp > 2000 ? '强壮' : '良好';
+  }, (val) => {
+    console.log(`英雄的健康状况是：${val}`);
+  });
   
-  // const heroW2 = new Watcher(heroObs, 'mgType', () => {
-  //   return heroObs.hp > 4500 ? '谋士' : '武将'
-  // }, (val) => {
-  //   console.log(`我的官职是：${val}`);
-  // });
+  const heroJob = new Watcher(heroObs, 'job', () => {
+    return heroObs.sp < 3000 ? '武将' : '谋士'
+  }, (val) => {
+    console.log(`英雄的职业是：${val}`);
+  });
   
-  // autoRun(() => {
-  //   console.log(`英雄初始属性：${heroW.type}`);
-  //   console.log(`英雄初始官职：${heroW2.mgType}`);
-  // });
+  autoRun(() => {
+    console.log(`英雄初始健康状况：${heroHealth.health}`);
+    console.log(`英雄初始职业：${heroJob.job}`);
+  });
   
-  // heroObs.hp = 4000;
-  // heroObs.hp = 5000;
-  // heroObs.hp = 4000;
-  // heroObs.hp = 4600;
+  
+  heroObs.name = '诸葛亮';
+  console.log(`英雄的名字是：${heroObs.name}`);
+  heroObs.hp = 5000;
+  heroObs.hp = 1000;
+  heroObs.sp = 4000;
   
   
   

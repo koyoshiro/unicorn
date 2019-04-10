@@ -1,11 +1,11 @@
 class Dep {
   constructor() {
-    this.deps = [];
+    this.deps = new Set();
   }
 
   depend() {
-    if (Dep.target && this.deps.indexOf(Dep.target) === -1) {
-      this.deps.push(Dep.target);
+    if (Dep.target) {
+      this.deps.add(Dep.target);
     }
   }
 
@@ -20,109 +20,105 @@ Dep.target = null;
 
 class Observable {
   constructor(obj) {
-    return this.walk(obj)
+    return this.walk(obj);
   }
 
   walk(obj) {
-    //return this._createProxy(obj)
-    const keys = Object.keys(obj)
+    const keys = Object.keys(obj);
     keys.forEach((key) => {
-      this.defineReactive(obj, key, obj[key])
+      this.defineReactive(obj, key, obj[key]);
     })
-    return obj
+    return obj;
   }
 
   defineReactive(obj, key, val) {
-    const dep = new Dep()
+    const dep = new Dep();
     if (Array.isArray(obj[key])) {
+      // Array添加push的钩子
       Object.defineProperty(obj[key], 'push', {
         value() {
           this[this.length] = arguments[0];
-          dep.notify()
+          dep.notify();
         }
       })
       Object.defineProperty(obj, key, {
         get() {
-          dep.depend()
-          return val
+          dep.depend();
+          return val;
         }
       })
     } else {
       Object.defineProperty(obj, key, {
         get() {
-          dep.depend()
-          return val
+          dep.depend();
+          return val;
         },
         set(newVal) {
-          val = newVal
-          dep.notify()
+          val = newVal;
+          dep.notify();
         }
       })
     }
-
   }
-
-  _createProxy = obj => {
-    const dep = new Dep()
-    const handler = {
-      get(target, name, receiver) {
-        console.log(`我的${name}属性被读取了！`);
-        //todo 加入观察者队列 
-        dep.depend()
-        return Reflect.get(target, name, receiver);
-      },
-      set(target, key, value, receiver) {
-        console.log(`我的${key}属性被修改为${value}了！`);
-        //内部调用对应的 Reflect 方法
-        const result = Reflect.set(target, key, value, receiver);
-        //todo 执行观察者队列 
-        //observableArray.forEach(item => item());  
-        dep.notify()
-      }
-    };
-    return new Proxy(obj, handler);
-  };
 }
-
-
-
 class Watcher {
   constructor(obj, key, cb, onComputedUpdate) {
-    this.obj = obj
-    this.key = key
-    this.cb = cb
-    this.onComputedUpdate = onComputedUpdate
-    return this.defineComputed()
+    this.obj = obj;
+    this.key = key;
+    this.cb = cb;
+    this.onComputedUpdate = onComputedUpdate;
+    return this.defineComputed();
   }
 
   defineComputed() {
-    const self = this
+    const self = this;
     const onDepUpdated = () => {
-      const val = self.cb()
-      this.onComputedUpdate(val)
+      const val = self.cb();
+      this.onComputedUpdate(val);
     }
 
     Object.defineProperty(self.obj, self.key, {
       get() {
-        Dep.target = onDepUpdated
-        const val = self.cb()
-        Dep.target = null
-        return val
+        Dep.target = onDepUpdated;
+        const val = self.cb();
+        Dep.target = null;
+        return val;
       },
       set() {
-        console.error('计算属性无法被赋值！')
+        console.error('计算属性无法被赋值！');
       }
     })
   }
 }
 
+function watcher (obj, key, cb) {
+  // 定义一个被动触发函数，当这个“被观测对象”的依赖更新时调用
+  const onDepUpdated = () => {
+    const val = cb()
+    onComputedUpdate(val)
+  }
+
+  Object.defineProperty(obj, key, {
+    get () {
+      Dep.target = onDepUpdated
+      // 执行cb()的过程中会用到Dep.target，
+      // 当cb()执行完了就重置Dep.target为null
+      const val = cb()
+      Dep.target = null
+      return val
+    },
+    set () {
+      console.error('计算属性无法被赋值！')
+    }
+  })
+}
 
 
 const hero = new Observable({
   name: '赵云',
   hp: 3000,
   sp: 150,
-  equipment: ['马', '长枪']
+  equipment: ['马', '矛']
 });
 
 new Watcher(hero, 'health', () => {
