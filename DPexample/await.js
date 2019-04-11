@@ -24,8 +24,6 @@ const autoRun = function (handler) {
       });
       await Dep.computeArray.clear();
     }
-  
-  
   }
   
   Dep.target = null;
@@ -129,8 +127,6 @@ const autoRun = function (handler) {
   heroObs.hp = 5000;
   heroObs.hp = 1000;
   heroObs.sp = 4000;
-  
-  
   
   // **********************
   

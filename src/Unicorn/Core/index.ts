@@ -1,7 +1,11 @@
-export default class Unicorn {
-        protected constructor(props: any) {
-                // todo init Radio
-                // todo init Channel
-                // todo init Log
-        }
+import Observable from './observable';
+import Watcher from './watcher';
+
+
+
+export {
+    Observable,
+    Watcher,
+    depTarget,
+    computedArray
 }
