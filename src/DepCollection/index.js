@@ -1,6 +1,6 @@
 import {
     inject as injectFn
-} from '../View/index';
+} from '../Unicorn/View/index';
 import {
     Model
 } from './model';

@@ -1,3 +1,4 @@
+import Linker from './linker';
 export default class Watcher {
     private object: any;
     private key: string;
@@ -16,8 +17,8 @@ export default class Watcher {
         const onDepUpdated = async (key: string) => {
             await console.log('wait');
 
-            if (!Dep.computedArray.has(key)) {
-                Dep.computedArray.add(key);
+            if (!Linker.computedArrayContains(key)) {
+                Linker.pushComputedArray(key);
                 const val = self.callback();
                 this.onComputedUpdate(val);
             }
@@ -26,11 +27,11 @@ export default class Watcher {
         const handler = {
             get(target: any, key: string, receiver: any) {
                 console.log(`我的${key}属性被读取了！`);
-                Dep.target = () => {
+                Linker.setDepTarget(() => {
                     onDepUpdated(key);
-                };
+                });
                 const val = self.callback();
-                Dep.target = null;
+                Linker.resetDepTarget();
                 return val;
             },
             set(target: any, key: string, value: any, receiver: any) {

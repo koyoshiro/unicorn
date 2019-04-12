@@ -1,37 +1,33 @@
-import { UC_Model_interface } from "./Interface/UC_Model_Interface";
-
+import { UC_Model_interface } from './Interface/UC_Model_Interface';
+import { Observable } from '../Core/index';
+import { isObject } from 'src/Util';
 export default class UC_Model implements UC_Model_interface {
-        __NameSpace__: string = "";
-        OBSERVABLE_OBJECT = null;
-        Effect: []; //todo
-        Subscribe: []; //todo
-        Listener: []; //todo
+    __NameSpace__: string = '';
+    OBSERVABLE_OBJECT:any;
+    Effect: []; //todo
+    Subscribe: []; //todo
+    Listener: []; //todo
 
-        protected constructor(nameSpace, modelParameterObject) {
-                if (!modelParameterObject) {
-                        console.error("modelParameterObject is undefined");
-                        return;
-                }
-                this.__NameSpace__ = nameSpace ? nameSpace : "";
-
-                if (!modelParameterObject.data) {
-                        console.error("modelParameterObject.data is undefined");
-                        return;
-                }
-                this.OBSERVABLE_OBJECT = this._CreateObservable(
-                        modelParameterObject.data
-                );
+    protected constructor(nameSpace:string, modelParam:any) {
+        if (!modelParam) {
+            console.error('modelParam is undefined');
+            return;
         }
+        this.__NameSpace__ = nameSpace ? nameSpace : '';
 
-        private _CreateObservable = (dataSource:any) => {
-                if (Array.isArray(dataSource)) {
-                    for(let obj of dataSource){
-                        this._CreateObservable(obj);
-                    }
-                } else if (isTypeOf(dataSource, "object")) {
-                        return new Observable(dataSource);
-                } else {
-                        console.error("不存在数据是一个值");
-                }
-        };
+        if (!modelParam.data) {
+            console.error('modelParam.data is undefined');
+            return;
+        }
+        this.OBSERVABLE_OBJECT = this._CreateObservable(modelParam.data);
+    }
+
+    private _CreateObservable = (dataSource: any) => {
+        if (isObject(dataSource)) {
+            return new Observable(dataSource);
+        } else {
+            console.error('参数数据需为对象');
+            return null;
+        }
+    };
 }

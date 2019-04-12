@@ -6,10 +6,10 @@ export default class Dependency {
     }
 
     depend(key: string) {
-        if (Linker.setDepTarget(()=>void)) {
+        if (Linker.getDepTarget()) {
             this.depArray.add({
                 key,
-                target: Dep.target
+                target: Linker.getDepTarget()
             });
         }
     }
