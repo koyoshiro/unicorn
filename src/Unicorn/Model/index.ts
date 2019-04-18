@@ -1,19 +1,16 @@
 import { UC_Model_interface } from './Interface/UC_Model_Interface';
 import { Observable } from '../Core/index';
-import { isObject } from 'src/Util';
 export default class UC_Model implements UC_Model_interface {
-    __NameSpace__: string = '';
-    OBSERVABLE_OBJECT:any;
+    OBSERVABLE_OBJECT: any;
     Effect: []; //todo
     Subscribe: []; //todo
     Listener: []; //todo
 
-    protected constructor(nameSpace:string, modelParam:any) {
+    public constructor(modelParam: any) {
         if (!modelParam) {
             console.error('modelParam is undefined');
             return;
         }
-        this.__NameSpace__ = nameSpace ? nameSpace : '';
 
         if (!modelParam.data) {
             console.error('modelParam.data is undefined');
@@ -23,7 +20,7 @@ export default class UC_Model implements UC_Model_interface {
     }
 
     private _CreateObservable = (dataSource: any) => {
-        if (isObject(dataSource)) {
+        if (typeof dataSource === 'object') {
             return new Observable(dataSource);
         } else {
             console.error('参数数据需为对象');
