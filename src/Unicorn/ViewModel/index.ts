@@ -1,4 +1,4 @@
-import UC_ViewModel_Interface from './Interface/UC_ViewModel_Interface';
+import I_UC_ViewModel from '../Interface/I_UC_ViewModel';
 import Events from './event';
 import { Watcher } from '../Core';
 
@@ -7,7 +7,7 @@ export default class UC_ViewModel extends Events {
     private observedModel: any = {};
     public state: any = {};
 
-    constructor(vmParam: UC_ViewModel_Interface, obsObject: any) {
+    constructor(vmParam: I_UC_ViewModel, obsObject: any) {
         super();
         if (!vmParam || !obsObject) {
             console.error('vm params is undefined');

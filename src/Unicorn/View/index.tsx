@@ -25,9 +25,13 @@ const inject = (store:any) =>{
       render () {
         return <WrappedComponent store={store} {...this.props} />
       }
+
+      // TODO add Hook
     }
     return StoreWrapper;
   }
 } 
 
-export default inject;
+export {
+  inject
+} 

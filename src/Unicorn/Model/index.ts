@@ -1,6 +1,6 @@
-import { UC_Model_interface } from './Interface/UC_Model_Interface';
+import { I_UC_Model } from '../Interface/I_UC_Model';
 import { Observable } from '../Core/index';
-export default class UC_Model implements UC_Model_interface {
+export default class UC_Model implements I_UC_Model {
     OBSERVABLE_OBJECT: any;
     Effect: []; //todo
     Subscribe: []; //todo

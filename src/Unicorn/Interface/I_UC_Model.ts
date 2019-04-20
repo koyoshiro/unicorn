@@ -1,5 +1,4 @@
-export interface UC_Model_interface{
-    __NameSpace__:string;
+export interface I_UC_Model{
     Effect : [];    //todo
     Subscribe:[];   //todo
     Listener:[];    //todo
