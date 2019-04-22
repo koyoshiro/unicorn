@@ -1,4 +1,4 @@
-import {I_UC_ViewModel} from '../Interface/I_UC_ViewModel';
+import { I_UC_ViewModel } from '../Interface/I_UC_ViewModel';
 import Events from './event';
 import { Watcher } from '../Core';
 import { autoRun } from '../Core';
@@ -38,9 +38,9 @@ export default class UC_ViewModel extends Events {
             };
         });
         keys.forEach(key => {
-            autoRun(()=>{
-                state[key].handler();   // 直接执行关系函数，确保在使用时没有问题
-            })
+            autoRun(() => {
+                state[key].handler(); // 直接执行关系函数，确保在使用时没有问题
+            });
         });
         return viewModelState;
     }
