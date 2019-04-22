@@ -19,10 +19,11 @@ export default class Builder {
     }
 
     public viewModel(vmParam: I_UC_ViewModel): any {
-        this.UCViewModel = new UC_ViewModel(vmParam, this.UCModel);
+        this.UCViewModel = new UC_ViewModel(vmParam, this.UCModel.observedModel);
     }
 
     public render(renderComponent: any) {
-        inject(renderComponent(this.UCViewModel));  // TODO 修改写法
+        @inject(this.UCViewModel)
+        renderComponent  // TODO 修改写法
     }
 }

@@ -1,7 +1,7 @@
 import { I_UC_Model } from '../Interface/I_UC_Model';
 import { Observable } from '../Core/index';
 export default class UC_Model implements I_UC_Model {
-    OBSERVABLE_OBJECT: any;
+    public observedModel: any;
     Effect: []; //todo
     Subscribe: []; //todo
     Listener: []; //todo
@@ -16,7 +16,7 @@ export default class UC_Model implements I_UC_Model {
             console.error('modelParam.data is undefined');
             return;
         }
-        this.OBSERVABLE_OBJECT = this._CreateObservable(modelParam.data);
+        this.observedModel = this._CreateObservable(modelParam.data);
     }
 
     private _CreateObservable = (dataSource: any) => {

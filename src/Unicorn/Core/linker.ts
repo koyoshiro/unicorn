@@ -1,11 +1,9 @@
-import { depTarget } from '.';
-
 export default class Linker {
     private static depTarget: any = null;
     private static computedArray: Set<any> = new Set();
 
     public static getDepTarget(): any {
-        return depTarget;
+        return this.depTarget;
     }
 
     public static setDepTarget(newDepTarget: any) {

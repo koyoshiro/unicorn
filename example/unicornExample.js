@@ -22,7 +22,7 @@ const inputData = {
     array: [{ key: 'A', val: 3 }, { key: 'B', val: 4 }]
 };
 
-ucA.model({
+const ucModelA = ucA.model({
     data: inputData,
     effects: {
         *fetchServer(requireParams) {
@@ -49,13 +49,13 @@ ucA.viewModel({
     store: {
         count: {
             handle: () => {
-                return phxA.MODEL.array[0].val;
+                return ucModelA.observedModel.array[0].val;
             },
             onComputedUpdate: () => {}
         },
         result: {
             handle: () => {
-                return phxA.MODEL.root.fatherNode.childNode.node > this.count ? true : false;
+                return ucModelA.observedModel.root.fatherNode.childNode.node > this.count ? true : false;
             },
             onComputedUpdate: handleRst => {
                 console.log(handleRst ? 'yes' : 'no');
@@ -65,11 +65,11 @@ ucA.viewModel({
     actions: {
         // payload 需要传递的信息
         add(payload) {
-            phxA.MODEL.array[0].val++;
+            ucModelA.observedModel.array[0].val++;
         },
         // payload 需要传递的信息
         minus(payload) {
-            phxA.MODEL.array[0].val--;
+            ucModelA.observedModel.array[0].val--;
         },
         asyncAdd() {
             setTimeout(() => {
@@ -77,7 +77,7 @@ ucA.viewModel({
             }, 500);
         },
         asyncRequire() {
-            phxA.model.effects.fetchServer();
+            ucModelA.effects.fetchServer();
         }
     }
 });
@@ -100,25 +100,32 @@ ucA.view(function(props) {
     );
 });
 
-@phxA.inject()
-class App extends React.Component {
-    render() {
-        const { actions, dispatch } = phxA.VIEW_MODEL;
-        const { count, result } = phxA.VIEW_MODEL.state;
-
-        return (
-            <Wrapper>
-                <span>{count}</span>
-                <span>{result}</span>
-                <div>
-                    <button onClick={() => dispatch(actions.add)}>add</button>
-                    <button onClick={() => dispatch(actions.minus)}>minus</button>
-                    <button onClick={() => dispatch(actions.asyncAdd)}>async</button>
-                    <button onClick={() => dispatch(actions.asyncRequire)}>async</button>
-                </div>
-            </Wrapper>
-        );
+ucA.render(
+    class App extends React.Component {
+        constructor(props) {
+            this.viewModel = props.viewModel;
+            const { actions, dispatch } = props.viewModel;
+            const { count, result } = props.viewModel.store;
+            this.actions = actions;
+            this.dispatch = dispatch;
+            this.count = count;
+            this.result = result;
+        }
+        render() {
+            return (
+                <Wrapper>
+                    <span>{this.count}</span>
+                    <span>{this.result}</span>
+                    <div>
+                        <button onClick={() => dispatch(this.actions.add)}>add</button>
+                        <button onClick={() => dispatch(this.actions.minus)}>minus</button>
+                        <button onClick={() => dispatch(this.actions.asyncAdd)}>async</button>
+                        <button onClick={() => dispatch(this.actions.asyncRequire)}>async</button>
+                    </div>
+                </Wrapper>
+            );
+        }
     }
-}
+);
 
 ReactDOM.render(<App />, document.getElementById('root'));

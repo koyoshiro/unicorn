@@ -1,11 +1,12 @@
-import I_UC_ViewModel from '../Interface/I_UC_ViewModel';
+import {I_UC_ViewModel} from '../Interface/I_UC_ViewModel';
 import Events from './event';
 import { Watcher } from '../Core';
+import { autoRun } from '../Core';
 
 export default class UC_ViewModel extends Events {
     private actions: any = {};
     private observedModel: any = {};
-    public state: any = {};
+    public store: any = {};
 
     constructor(vmParam: I_UC_ViewModel, obsObject: any) {
         super();
@@ -22,7 +23,7 @@ export default class UC_ViewModel extends Events {
             return;
         }
 
-        this.state = this._createVM(state);
+        this.store = this._createVM(state);
         this._bindActions(actions);
     }
 
@@ -35,6 +36,11 @@ export default class UC_ViewModel extends Events {
                     key: new Watcher(this.observedModel, key, state[key].handler, state[key].onComputedUpdate)
                 }
             };
+        });
+        keys.forEach(key => {
+            autoRun(()=>{
+                state[key].handler();   // 直接执行关系函数，确保在使用时没有问题
+            })
         });
         return viewModelState;
     }
