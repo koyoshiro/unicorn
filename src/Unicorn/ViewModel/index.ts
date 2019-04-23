@@ -6,8 +6,9 @@ import { autoRun } from '../Core';
 export default class UC_ViewModel extends Events {
     private actions: any = {};
     private observedModel: any = {};
+    private reactiveView : any =null;
     public store: any = {};
-
+    
     constructor(vmParam: I_UC_ViewModel, obsObject: any) {
         super();
         if (!vmParam || !obsObject) {
@@ -33,7 +34,10 @@ export default class UC_ViewModel extends Events {
         keys.forEach(key => {
             viewModelState = {
                 ...{
-                    key: new Watcher(this.observedModel, key, state[key].handler, state[key].onComputedUpdate)
+                    key: new Watcher(this.observedModel, key, state[key].handler, (val:any)=>{
+                        state[key].onComputedUpdate();
+                        this.reactiveView.setState({key:val});
+                    })
                 }
             };
         });
@@ -62,4 +66,10 @@ export default class UC_ViewModel extends Events {
         }
         action(payload);
     };
+
+    public registerView(reactiveView:any){
+        if(this.reactiveView===null){
+            this.reactiveView=reactiveView;
+          }
+    }
 }

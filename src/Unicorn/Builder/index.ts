@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import { I_UC_ViewModel } from '../Interface/I_UC_ViewModel';
 import { I_UC_Model } from '../Interface/I_UC_Model';
 
@@ -22,8 +23,7 @@ export default class Builder {
         this.UCViewModel = new UC_ViewModel(vmParam, this.UCModel.observedModel);
     }
 
-    public render(renderComponent: any) {
-        @inject(this.UCViewModel)
-        renderComponent  // TODO 修改写法
+    public render(renderComponent: Component) {
+        inject(this.UCViewModel)(renderComponent);
     }
 }

@@ -4,7 +4,7 @@ export default class Watcher {
     private key: string;
     private callback: () => void;
     private onComputedUpdate: (val: any) => void;
-    constructor(obj: any, field: string, cb: () => void, computedUpdate: () => void) {
+    constructor(obj: any, field: string, cb: () => void, computedUpdate: (val:any) => void) {
         this.object = obj;
         this.key = field;
         this.callback = cb;

@@ -1,33 +1,26 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 
 interface IProp {
-    _change: () => void;
+  _change: () => void;
 }
 
 const inject = (viewModel: any) => {
-    return function withStore(WrappedComponent: React.Component) {
-        class StoreWrapper extends React.Component {
-            private _change: any;
+    return function withStore(WrappedComponent: Component) {
+        class StoreWrapper extends Component {
             constructor(props: IProp) {
                 super(props);
-
-                this._change = (obj: any) => {
-                    const state: any = {};
-
-                    state[obj.key] = obj.value;
-                    this.setState(state);
-                };
-
-                viewModel.on('change', this._change);
-                WrappedComponent.prototype.viewModel = viewModel;
             }
 
             render() {
-                return <WrappedComponent viewModel={viewModel} {...this.props} />;
+                return <WrappedComponent viewModel={viewModel.store}/>;
+            }
+
+            componentDidMount() {
+              viewModel.registerView(this);
             }
 
             shouldComponentUpdate() {
-                return false; // 模块只能被初始化一次，不允许更新
+                //return false; // 模块只能被初始化一次，不允许更新
             }
         }
         return StoreWrapper;
