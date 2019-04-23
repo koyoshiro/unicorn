@@ -53,7 +53,7 @@ export default class UC_ViewModel extends Events {
         Object.keys(actions).forEach(type => {
             const action = actions[type];
             const callback = (payload: any) => {
-                action.call(this, this.observedModel, payload);
+                action.call(this, payload);
             };
             this.actions[type] = callback;
         });

@@ -73,7 +73,7 @@ ucA.viewModel({
         },
         asyncAdd() {
             setTimeout(() => {
-                this.add;
+                this.actions.add;
             }, 500);
         },
         asyncRequire() {
@@ -82,34 +82,21 @@ ucA.viewModel({
     }
 });
 
-ucA.view(function(props) {
-    const { actions, dispatch } = props;
-    const { count, result } = props.state;
-
-    return (
-        <div>
-            <span>{count}</span>
-            <span>{result}</span>
-            <div>
-                <button onClick={() => dispatch(actions.add)}>add</button>
-                <button onClick={() => dispatch(actions.minus)}>minus</button>
-                <button onClick={() => dispatch(actions.asyncAdd)}>async</button>
-                <button onClick={() => dispatch(actions.asyncRequire)}>async</button>
-            </div>
-        </div>
-    );
-});
-
 ucA.render(
     class App extends React.Component {
         constructor(props) {
             this.viewModel = props.viewModel;
             const { actions, dispatch } = props.viewModel;
             const { count, result } = props.viewModel.store;
+            const { subscribe, unSubscribe,sendEvent,crossCall } = props.builder;
             this.actions = actions;
             this.dispatch = dispatch;
             this.count = count;
             this.result = result;
+            this.subscribe = subscribe;
+            this.unSubscribe = unSubscribe;
+            this.sendEvent = sendEvent;
+            this.crossCall = crossCall;
         }
         render() {
             return (
@@ -117,10 +104,14 @@ ucA.render(
                     <span>{this.count}</span>
                     <span>{this.result}</span>
                     <div>
-                        <button onClick={() => dispatch(this.actions.add)}>add</button>
-                        <button onClick={() => dispatch(this.actions.minus)}>minus</button>
-                        <button onClick={() => dispatch(this.actions.asyncAdd)}>async</button>
-                        <button onClick={() => dispatch(this.actions.asyncRequire)}>async</button>
+                        <button onClick={() => this.dispatch(this.actions.add)}>add</button>
+                        <button onClick={() => this.dispatch(this.actions.minus)}>minus</button>
+                        <button onClick={() => this.dispatch(this.actions.asyncAdd)}>async</button>
+                        <button onClick={() => this.dispatch(this.actions.asyncRequire)}>async</button>
+                        <button onClick={() => this.subscribe('AAA',()=>{})}>subscribe</button>
+                        <button onClick={() => this.unSubscribe('AAA')}>unSubscribe</button>
+                        <button onClick={() => this.sendEvent('AAA')}>sendEvent</button>
+                        <button onClick={() => this.crossCall('ucB','add')}>crossCall</button>
                     </div>
                 </Wrapper>
             );
