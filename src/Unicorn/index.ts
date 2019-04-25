@@ -16,8 +16,16 @@ export default class Unicorn {
             this.__BUILD_RECORD__.push(nameSpace);
             this.__BUILD_STACK__.push({
                 key: nameSpace,
-                instance: new Builder(nameSpace)
+                instance: new Builder(nameSpace,this._channel,null)
             });
         }
+    }
+
+    private _channel(builderName:string, actionName:string,payload?:any){
+        if(!builderName||!actionName||this.__BUILD_RECORD__.indexOf(builderName) === -1){
+            return;
+        }
+        const builderChannel = this.__BUILD_STACK__.find((builder:any)=>builder.key===builderName).instance;
+        builderChannel.UCViewModel.dispatch(actionName,payload);
     }
 }

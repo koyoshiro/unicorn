@@ -31,8 +31,8 @@ export default class Builder {
         inject(this)(renderComponent);
     }
 
-    public crossCall(builderName:string, actionName:string) {
-        this.Channel(builderName,actionName);
+    public crossCall(builderName:string, actionName:string,payload:any) {
+        this.Channel(builderName,actionName,payload);
     }
 
     public sendEvent(eventName:string){
