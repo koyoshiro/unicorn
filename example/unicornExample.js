@@ -38,9 +38,6 @@ const ucModelA = ucA.model({
                 dispatch({ type: 'add' });
             });
         }
-    },
-    listener: {
-        // todo 监听模块之间通信使用
     }
 });
 

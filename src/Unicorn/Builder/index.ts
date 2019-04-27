@@ -21,10 +21,12 @@ export default class Builder {
 
     public model(modelParam: I_UC_Model) {
         this.UCModel = new UC_Model(modelParam);
+        this.UCModel.subscribe = this.subscribe;    //todo
     }
 
     public viewModel(vmParam: I_UC_ViewModel): any {
         this.UCViewModel = new UC_ViewModel(vmParam, this.UCModel.observedModel);
+        this.UCViewModel.channel = this.Channel; //todo 
     }
 
     public render(renderComponent: Component) {
@@ -36,7 +38,7 @@ export default class Builder {
     }
 
     public sendEvent(eventName:string){
-        this.Broadcast.sendEvent(eventName);
+        this.Broadcast.sendEvent(eventName);    //todo
     }
 
     public subscribe(eventName:string,eventCallback:(p:any)=>void){

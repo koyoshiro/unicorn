@@ -60,6 +60,9 @@ export default class UC_ViewModel extends Events {
     }
 
     public dispatch = (type: string, payload: any) => {
+
+        // TODO 判断是否为本vm中的action，若是则直接处理，若不是则调用builder中的cross方法处理（隐式处理所有跨模块通信）
+
         const action = this.actions[type];
         if (!action || typeof action !== 'function') {
             throw new Error(`Can not find action of ${type}`);
