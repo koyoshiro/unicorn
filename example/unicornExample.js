@@ -23,9 +23,9 @@ const inputData = {
 };
 
 const ucModelA = ucA.model({
-    data: inputData,
+    dataSource: inputData,
     effects: {
-        *fetchServer(requireParams) {
+        fetchServer(requireParams) {
             const data = ajax.require(requireParams);
             this.reloadModel(data);
             // const user = yield call(fetchUser, id);

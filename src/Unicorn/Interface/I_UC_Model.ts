@@ -1,5 +1,5 @@
 export interface I_UC_Model{
-    Effect : [];    //todo
-    Subscribe:[];   //todo
-    Listener:[];    //todo
+    Effect : any;    //todo
+    Subscribe?:any;   //todo
+    Listener?:any;    //todo
 }

@@ -7,7 +7,7 @@ import UC_ViewModel from '../ViewModel';
 import { inject } from '../View';
 
 export default class Builder {
-    protected __NameSpace__: string = '';
+    public readonly __NameSpace__: string = '';
     protected UCModel: any = null;
     protected UCViewModel: any = null;
     protected Channel: any;
@@ -21,19 +21,17 @@ export default class Builder {
 
     public model(modelParam: I_UC_Model) {
         this.UCModel = new UC_Model(modelParam);
-        this.UCModel.subscribe = this.subscribe;    //todo
     }
 
     public viewModel(vmParam: I_UC_ViewModel): any {
-        this.UCViewModel = new UC_ViewModel(vmParam, this.UCModel.observedModel);
-        this.UCViewModel.channel = this.Channel; //todo 
+        this.UCViewModel = new UC_ViewModel(vmParam, this);
     }
 
     public render(renderComponent: Component) {
         inject(this)(renderComponent);
     }
 
-    public crossCall(builderName:string, actionName:string,payload:any) {
+    public call(builderName:string, actionName:string,payload:any) {
         this.Channel(builderName,actionName,payload);
     }
 

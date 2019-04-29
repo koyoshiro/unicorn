@@ -1,25 +1,37 @@
 import { I_UC_Model } from '../Interface/I_UC_Model';
 import { Observable } from '../Core/index';
 export default class UC_Model implements I_UC_Model {
-    public observedModel: any;
-    Effect: []; //todo
-    Subscribe: []; //todo
-    Listener: []; //todo
+    public readonly observedModel: any = null;
+    public readonly Effect: any[]; //todo
 
     public constructor(modelParam: any) {
         if (!modelParam) {
             console.error('modelParam is undefined');
             return;
         }
-
-        if (!modelParam.data) {
-            console.error('modelParam.data is undefined');
-            return;
+        if(modelParam.dataSource){
+            this.observedModel = this._createObservable(modelParam.dataSource);
         }
-        this.observedModel = this._CreateObservable(modelParam.data);
+
+        if(modelParam.effects){
+            this.Effect = modelParam.effects;
+        }
+
+        // else if (modelParam.effects.fetch) {
+        //     modelParam.dataSource = this._fetchServer(modelParam.effects.fetch);
+        //     this.observedModel = this._createObservable(modelParam.dataSource);
+        // } else {
+        //     console.error('modelParam is error');
+        //     return;
+        // }
     }
 
-    private _CreateObservable = (dataSource: any) => {
+    private async _fetchServer(effectFetch: () => any) {
+        const fetchData = await effectFetch();
+        return fetchData;
+    }
+
+    private _createObservable = (dataSource: any) => {
         if (typeof dataSource === 'object') {
             return new Observable(dataSource);
         } else {

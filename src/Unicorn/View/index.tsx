@@ -16,6 +16,7 @@ const inject = (builder: any) => {
             }
 
             componentDidMount() {
+                builder.UCModel.fetchServer();
                 builder.viewModel.registerView(this);
             }
 
