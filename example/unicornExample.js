@@ -46,13 +46,13 @@ ucA.viewModel({
     store: {
         count: {
             handle: () => {
-                return ucModelA.observedModel.array[0].val;
+                return ucA.observedModel.array[0].val;
             },
             onComputedUpdate: () => {}
         },
         result: {
             handle: () => {
-                return ucModelA.observedModel.root.fatherNode.childNode.node > this.count ? true : false;
+                return ucA.observedModel.root.fatherNode.childNode.node > this.count ? true : false;
             },
             onComputedUpdate: handleRst => {
                 console.log(handleRst ? 'yes' : 'no');
@@ -62,11 +62,11 @@ ucA.viewModel({
     actions: {
         // payload 需要传递的信息
         add(payload) {
-            ucModelA.observedModel.array[0].val++;
+            ucA.observedModel.array[0].val++;
         },
         // payload 需要传递的信息
         minus(payload) {
-            ucModelA.observedModel.array[0].val--;
+            ucA.observedModel.array[0].val--;
         },
         asyncAdd() {
             setTimeout(() => {
@@ -74,7 +74,7 @@ ucA.viewModel({
             }, 500);
         },
         asyncRequire() {
-            ucModelA.effects.fetchServer();
+            ucA.effects.fetchServer();
         }
     }
 });

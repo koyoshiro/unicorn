@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 interface IProp {
-  _change: () => void;
+    _change: () => void;
 }
 
-const inject = (builder: any) => {
+const inject = (builder: any): Component => {
     return function withStore(WrappedComponent: Component) {
         class StoreWrapper extends Component {
             constructor(props: IProp) {
@@ -12,7 +12,7 @@ const inject = (builder: any) => {
             }
 
             render() {
-                return <WrappedComponent viewModel={builder.viewModel.store}/>;
+                return <WrappedComponent viewModel={builder.viewModel.store} />;
             }
 
             componentDidMount() {

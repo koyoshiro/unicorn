@@ -6,35 +6,32 @@ import { autoRun } from '../Core';
 export default class UC_ViewModel extends Events {
     private builder: any;
     private actions: any = {};
-    private observedModel: any = {};
     private reactiveView: any = null;
     public store: any = {};
+    private viewModelParams:I_UC_ViewModel = {state:{}};
 
-    constructor(vmParam: I_UC_ViewModel, builder: any) {
+    constructor(vmParam: I_UC_ViewModel) {
         super();
         if (!vmParam) {
             console.error('vm params is undefined');
             return;
         }
-        const { state, actions } = vmParam;
-        this.builder = builder;
+        this.viewModelParams = vmParam;
+    }
 
-        if (!state) {
-            console.error('vmParam.state is undefined');
-            return;
-        }
-
-        this.store = this._createVM(state);
+    public init(observedModel:any){
+        const { state, actions } = this.viewModelParams ;
+        this.store = this._createVM(state,observedModel);
         this._bindActions(actions);
     }
 
-    private _createVM(state: any) {
+    private _createVM(state: any,observedModel:any) {
         let viewModelState = {};
         const keys = Object.keys(state);
         keys.forEach(key => {
             viewModelState = {
                 ...{
-                    key: new Watcher(this.builder.UCModel.observedModel, key, state[key].handler, (val: any) => {
+                    key: new Watcher(observedModel, key, state[key].handler, (val: any) => {
                         state[key].onComputedUpdate();
                         this.reactiveView.setState({ key: val });
                     })
