@@ -4,7 +4,7 @@ interface IProp {
     _change: () => void;
 }
 
-const inject = (builder: any): Component => {
+const inject = (viewModel: any): Component => {
     return function withStore(WrappedComponent: Component) {
         class StoreWrapper extends Component {
             constructor(props: IProp) {
@@ -12,12 +12,11 @@ const inject = (builder: any): Component => {
             }
 
             render() {
-                return <WrappedComponent viewModel={builder.viewModel.store} />;
+                return <WrappedComponent viewModel={viewModel} />;
             }
 
             componentDidMount() {
-                builder.UCModel.fetchServer();
-                builder.viewModel.registerView(this);
+                viewModel.registerView(this);
             }
 
             shouldComponentUpdate() {

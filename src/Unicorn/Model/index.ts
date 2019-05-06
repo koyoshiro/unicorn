@@ -4,26 +4,12 @@ export default class UC_Model implements I_UC_Model {
     public readonly observedModel: any = null;
     public readonly Effect: any;
 
-    public constructor(modelParam: any) {
-        
-        if (modelParam.dataSource) {
-            this.observedModel =this._createObservable(modelParam.dataSource);
-        }
-
-        if (modelParam.effects) {
-            this.Effect = modelParam.effects;
-        } else if (modelParam.effects.fetch) {
-            modelParam.dataSource = this._fetchServer(modelParam.effects.fetch);
-            this.observedModel = this._createObservable(modelParam.dataSource);
-        } else {
+    public constructor(modelData: any) {
+        if (!modelData) {
             console.error('modelParam is error');
             return;
         }
-    }
-
-    private async _fetchServer(effectFetch: () => any) {
-        const fetchData = await effectFetch();
-        return fetchData;
+        this.observedModel = this._createObservable(modelData);
     }
 
     private _createObservable = (dataSource: any) => {
@@ -34,4 +20,8 @@ export default class UC_Model implements I_UC_Model {
             return null;
         }
     };
+
+    public replaceModel(){
+        
+    }
 }
