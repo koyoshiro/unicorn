@@ -1,6 +1,7 @@
 import { Store, inject } from '../src';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { call } from '../src/Generate/call';
 
 // Page
 const UC = new Unicorn();
@@ -63,7 +64,7 @@ const ucA = new UC.Builder({
             }, 500);
         },
         asyncRequire() {
-            ucA.effects.fetchServer();
+            effects.fetchServer();
         }
     },
     effects: {
@@ -75,15 +76,32 @@ const ucA = new UC.Builder({
         }
     },
     subscriptions: {
-        setup({ dispatch, history }) {
-            return history.listen(({ pathname, query }) => {
-                if (pathname === '/users') {
-                    dispatch({
-                        type: 'fetch',
-                        payload: query
-                    });
-                }
-            });
+        setup() {
+            const inputData = {
+                num: 1,
+                str: 'example',
+                root: {
+                    fatherNode: {
+                        childNode: {
+                            node: 5
+                        }
+                    }
+                },
+                array: [
+                    {
+                        key: 'A',
+                        val: 3
+                    },
+                    {
+                        key: 'B',
+                        val: 4
+                    }
+                ]
+            };
+            setTimeout(() => {
+                debugger;
+                return inputData;
+            }, 2000);
         },
         keyEvent({ dispatch }) {
             key('⌘+up, ctrl+up', () => {
@@ -95,10 +113,38 @@ const ucA = new UC.Builder({
     }
 });
 
+function fetchData(){
+    const inputData = {
+        num: 1,
+        str: 'example',
+        root: {
+            fatherNode: {
+                childNode: {
+                    node: 5
+                }
+            }
+        },
+        array: [
+            {
+                key: 'A',
+                val: 3
+            },
+            {
+                key: 'B',
+                val: 4
+            }
+        ]
+    };
+    setTimeout(() => {
+        debugger;
+        return inputData;
+    }, 2000);
+}
+
 class App extends React.Component {
     constructor(props) {
         const { dispatch } = props.viewModel,
-        { count, result } = props.viewModel.store;
+            { count, result } = props.viewModel.store;
         this.dispatch = dispatch;
         this.count = count;
         this.result = result;
@@ -108,7 +154,7 @@ class App extends React.Component {
             <span>{this.count}</span>
             <span>{this.result}</span>
             <div>
-                <button onClick={() => this.dispatch('ucA/add',2)}>add</button>
+                <button onClick={() => this.dispatch('add', 2)}>add</button>
                 <button onClick={() => this.dispatch(this.actions.minus)}>minus</button>
                 <button onClick={() => this.dispatch(this.actions.asyncAdd)}>async</button>
                 <button onClick={() => this.dispatch(this.actions.asyncRequire)}>async</button>
