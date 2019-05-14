@@ -2,9 +2,9 @@ import Linker from './linker';
 export default class Watcher {
     private object: any;
     private key: string;
-    private callback: () => void;
+    private callback: (obm: any) => void;
     private onComputedUpdate: (val: any) => void;
-    constructor(obj: any, field: string, cb: () => void, computedUpdate: (val:any) => void) {
+    constructor(obj: any, field: string, cb: () => void, computedUpdate: (val: any) => void) {
         this.object = obj;
         this.key = field;
         this.callback = cb;
@@ -19,7 +19,7 @@ export default class Watcher {
 
             if (!Linker.computedArrayContains(key)) {
                 Linker.pushComputedArray(key);
-                const val = self.callback();
+                const val = self.callback(self.object);
                 this.onComputedUpdate(val);
             }
         };

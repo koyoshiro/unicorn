@@ -23,7 +23,7 @@ class Watcher {
             yield console.log('wait');
             if (!linker_1.default.computedArrayContains(key)) {
                 linker_1.default.pushComputedArray(key);
-                const val = self.callback();
+                const val = self.callback(self.object);
                 this.onComputedUpdate(val);
             }
         });

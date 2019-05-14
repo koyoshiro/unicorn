@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = require("react");
 const inject = (viewModel) => {
-    return function withStore(WrappedComponent) {
+    return function withStore(wrappedComponent) {
         class StoreWrapper extends react_1.Component {
             constructor(props) {
                 super(props);
             }
             render() {
-                return react_1.default.createElement(WrappedComponent, { viewModel: viewModel });
+                return react_1.default.createElement("wrappedComponent", { viewModel: viewModel });
             }
             componentDidMount() {
                 viewModel.registerView(this);
@@ -21,3 +21,5 @@ const inject = (viewModel) => {
     };
 };
 exports.inject = inject;
+const connect = (viewModel, component) => {
+};

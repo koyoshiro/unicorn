@@ -16,10 +16,7 @@ class Builder {
         this.__Configs__ = builderParams;
         this.__NameSpace__ = this.__Configs__.namespace;
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
-            const res = this.__Configs__.subscriptions.setup();
-            const initIt = this.init();
-            initIt.next(res);
-            initIt.next();
+            this.doSetup(this.__Configs__.subscriptions.setup);
         }
         else {
             this.__Configs__.model = new Model_1.default(this.__Configs__.model);
@@ -30,17 +27,33 @@ class Builder {
         };
         this.UCViewModel = new ViewModel_1.default(viewModelParams);
     }
-    *init(modelData) {
-        this.__Configs__.model = yield new Model_1.default(modelData);
-        yield this.UCViewModel.init(this.__Configs__.model);
+    doSetup(setup) {
+        return setup()
+            .then((res) => {
+            this.__Configs__.model = new Model_1.default(res).observedModel;
+            this.UCViewModel.init(this.__Configs__.model);
+            const allowRender = this.doRender();
+            allowRender.next();
+        })
+            .catch((err) => {
+            console.log(err);
+        });
+    }
+    *doRender() {
+        yield View_1.inject(this.UCViewModel)(this.renderComponent);
     }
     render(renderComponent) {
-        setTimeout(() => {
-            View_1.inject(this.UCViewModel)(renderComponent);
-        }, 1000);
+        this.renderComponent = renderComponent;
+        if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
+            console.log('wait autoRender');
+        }
+        else {
+            const allowRender = this.doRender();
+            allowRender.next();
+        }
     }
     replaceModel(modelData) {
-        this.__Configs__.model = new Model_1.default(modelData);
+        this.__Configs__.model = new Model_1.default(modelData).observedModel;
         this.UCViewModel.init(this.__Configs__.model);
     }
 }

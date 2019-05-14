@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function call(asyncFunc, payload) {
-    return asyncFunc();
+    setInterval(asyncFunc(), 100);
 }
 exports.call = call;
