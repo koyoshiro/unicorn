@@ -1,15 +1,14 @@
 {
-  "name": "phoenix",
+  "name": "unicorn",
   "version": "0.0.1",
   "description": "a react mvvm framework",
   "scripts": {
-    "tsb": "echo '{\"env\": \"build\"}' > ./env.json && tsc --outDir ./dest || true"
-    },
+    "tsb": "tsc"
+  },
   "dependencies": {
-    
+    "typescript": "^2.8.3"
   },
   "devDependencies": {
-    "react": "16.0.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "styled-components": "^4.0.2",
