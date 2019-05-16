@@ -4,31 +4,34 @@ interface IProp {
     _change: () => void;
 }
 
-const inject = (viewModel: any): Component => {
-    return function withStore(wrappedComponent: Component) {
-        class StoreWrapper extends Component {
-            constructor(props: IProp) {
-                super(props);
-            }
+const connect = (viewModel: any, renderComponent: Component): Component => {
+    class StoreWrapper extends Component {
+        private state: any;
 
-            private render() {
-                return <wrappedComponent viewModel={viewModel} />;
-            }
-
-            private componentDidMount() {
-                viewModel.registerView(this);
-            }
-
-            private shouldComponentUpdate() {
-                //return false; // 模块只能被初始化一次，不允许更新
-            }
+        constructor(props: IProp) {
+            super(props);
+            this.state = {
+                vm: viewModel
+            };
         }
-        return StoreWrapper;
-    };
+
+        private render() {
+            return <renderComponent viewModel={this.state.vm} />;
+        }
+
+        private componentDidMount() {
+            viewModel.registerView(this);
+        }
+
+        public doSomething(viewModel: any) {
+            this.setState({ vm: viewModel });
+        }
+
+        private shouldComponentUpdate() {
+            //return false; // 模块只能被初始化一次，不允许更新
+        }
+    }
+    return StoreWrapper;
 };
 
-const connect = (viewModel: any, component: Component) => {
-    
-};
-
-export { inject };
+export { connect };

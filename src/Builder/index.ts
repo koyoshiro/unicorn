@@ -5,7 +5,8 @@ import { I_UC_Model } from '../Interface/I_UC_Model';
 
 import UC_Model from '../Model';
 import UC_ViewModel from '../ViewModel';
-import { inject } from '../View';
+import { connect } from '../View';
+import defaultComponent from './default';
 
 export default class Builder {
     public readonly __NameSpace__: string = '';
@@ -15,9 +16,9 @@ export default class Builder {
 
     protected observedModel: any = null;
     private renderComponent: Component;
-    private wrappedComponent: Component;
+    private wrappedComponent: Component = defaultComponent;
     private iteratorRender: any = this.doRender();
-    private iteratorStart: any=this.doStart();
+    // private iteratorStart: any = this.doStart();
 
     public constructor(builderParams: I_UC_Builder) {
         if (!builderParams) {
@@ -42,18 +43,22 @@ export default class Builder {
                 this.__Configs__.model = new UC_Model(res).observedModel;
                 this.UCViewModel.init(this.__Configs__.model);
                 this.iteratorRender.next();
-                this.iteratorStart.next();
+                // this.iteratorStart.next();
             })
             .catch((err: any) => {
                 console.log(err);
             });
     }
     private *doRender() {
-        this.wrappedComponent = yield inject(this.UCViewModel)(this.renderComponent);
+        yield this.wrappedComponent.doSomething(this.UCViewModel);
     }
 
     protected render(renderComponent: Component): Component {
         this.renderComponent = renderComponent;
+        this.wrappedComponent = connect(
+            this.UCViewModel,
+            this.renderComponent
+        );
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             console.log('wait autoRender');
         } else {
@@ -61,20 +66,20 @@ export default class Builder {
         }
     }
 
-    private *doStart(wrappedComponent?: Component) {
-        yield this.wrappedComponent = wrappedComponent;
-        return yield this.wrappedComponent;
-    }
+    // private *doStart(wrappedComponent?: Component) {
+    //     yield (this.wrappedComponent = wrappedComponent);
+    //     return yield this.wrappedComponent;
+    // }
 
-    protected start() {
-        // this.iteratorStart = this.doStart();
-        if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
-            console.log('wait autoRender');
-        } else {
-            this.iteratorStart.next();
-            return this.iteratorStart.next();
-        }
-    }
+    // protected start() {
+    //     // this.iteratorStart = this.doStart();
+    //     if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
+    //         console.log('wait autoRender');
+    //     } else {
+    //         this.iteratorStart.next();
+    //         return this.iteratorStart.next();
+    //     }
+    // }
 
     protected replaceModel(modelData: any) {
         this.__Configs__.model = new UC_Model(modelData).observedModel;

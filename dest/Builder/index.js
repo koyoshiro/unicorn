@@ -3,13 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Model_1 = require("../Model");
 const ViewModel_1 = require("../ViewModel");
 const View_1 = require("../View");
+const default_1 = require("./default");
 class Builder {
+    // private iteratorStart: any = this.doStart();
     constructor(builderParams) {
         this.__NameSpace__ = '';
         this.__Configs__ = {};
         this.UCModel = null;
         this.UCViewModel = null;
         this.observedModel = null;
+        this.wrappedComponent = default_1.default;
+        this.iteratorRender = this.doRender();
         if (!builderParams) {
             return;
         }
@@ -32,26 +36,39 @@ class Builder {
             .then((res) => {
             this.__Configs__.model = new Model_1.default(res).observedModel;
             this.UCViewModel.init(this.__Configs__.model);
-            const allowRender = this.doRender();
-            allowRender.next();
+            this.iteratorRender.next();
+            // this.iteratorStart.next();
         })
             .catch((err) => {
             console.log(err);
         });
     }
     *doRender() {
-        yield View_1.inject(this.UCViewModel)(this.renderComponent);
+        yield this.wrappedComponent.doSomething(this.UCViewModel);
     }
     render(renderComponent) {
         this.renderComponent = renderComponent;
+        this.wrappedComponent = View_1.connect(this.UCViewModel, this.renderComponent);
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             console.log('wait autoRender');
         }
         else {
-            const allowRender = this.doRender();
-            allowRender.next();
+            this.iteratorRender.next();
         }
     }
+    // private *doStart(wrappedComponent?: Component) {
+    //     yield (this.wrappedComponent = wrappedComponent);
+    //     return yield this.wrappedComponent;
+    // }
+    // protected start() {
+    //     // this.iteratorStart = this.doStart();
+    //     if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
+    //         console.log('wait autoRender');
+    //     } else {
+    //         this.iteratorStart.next();
+    //         return this.iteratorStart.next();
+    //     }
+    // }
     replaceModel(modelData) {
         this.__Configs__.model = new Model_1.default(modelData).observedModel;
         this.UCViewModel.init(this.__Configs__.model);

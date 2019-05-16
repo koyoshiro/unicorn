@@ -116,5 +116,5 @@ class App extends React.Component {
 }
 debugger;
 
-const UCDemo = ucA.render(App);
-export default UCDemo;
+const wrapComponent = ucA.render(App);
+export default wrapComponent;
