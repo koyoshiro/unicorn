@@ -4,19 +4,19 @@ interface IProp {
     _change: () => void;
 }
 
-const connect = (viewModel: any, renderComponent: Component): Component => {
-    class StoreWrapper extends Component {
+const connect = (viewModel: any, RenderComponent: Component): Component => {
+    class StoreWrapper extends React.Component {
         private state: any;
 
         constructor(props: IProp) {
             super(props);
             this.state = {
-                vm: viewModel
+                vm: viewModel.store
             };
         }
 
         private render() {
-            return <renderComponent viewModel={this.state.vm} />;
+            return <RenderComponent viewModel={this.state.vm} />;
         }
 
         private componentDidMount() {
@@ -24,7 +24,7 @@ const connect = (viewModel: any, renderComponent: Component): Component => {
         }
 
         public doSomething(viewModel: any) {
-            this.setState({ vm: viewModel });
+            this.setState({ vm: viewModel.store });
         }
 
         private shouldComponentUpdate() {
