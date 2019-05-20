@@ -28,28 +28,23 @@ export default class UC_ViewModel extends Events {
     }
 
     private createVM(state: any, observedModel: any) {
-        let viewModelState:any[] = [];
+        let viewModelState: any = {};
         const keys = Object.keys(state);
         keys.forEach(key => {
             const watcherIns = new Watcher(observedModel, key, state[key].handler, (val: any) => {
                 state[key].onComputedUpdate(val);
                 this.reactiveView.setState({ key: val });
             });
-            watcherIns.key;
-            // viewModelState.push(watcherIns);
-
-            // viewModelState = {
-            //     ...{
-            //         key: new Watcher(observedModel, key, state[key].handler, (val: any) => {
-            //             state[key].onComputedUpdate(val);
-            //             this.reactiveView.setState({ key: val });
-            //         })
-            //     }
-            // };
+            // todo test
+            viewModelState = {
+                ...{
+                    key: watcherIns.key
+                }
+            };
         });
         keys.forEach(key => {
             autoRun(() => {
-                // viewModelState[key].handler(observedModel); // 直接执行关系函数，确保在使用时没有问题
+                viewModelState[key].handler(observedModel); // 直接执行关系函数，确保在使用时没有问题
             });
         });
         return viewModelState;
