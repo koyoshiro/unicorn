@@ -1,9 +1,9 @@
 import Dependency from './dependency';
 export default class Observable {
     constructor(object: any) {
-        return this._createProxy(object);
+        return this.createProxy(object);
     }
-    private _createProxy(object: any) {
+    private createProxy(object: any) {
         const dep = new Dependency();
         const handler = {
             get(target: any, key: string, receiver: any) {
@@ -14,9 +14,9 @@ export default class Observable {
             },
             set(target: any, key: string, value: any, receiver: any) {
                 console.log(`我的${key}属性被修改为${value}了！`);
-                //内部调用对应的 Reflect 方法
+                // 内部调用对应的 Reflect 方法
                 const result = Reflect.set(target, key, value, receiver);
-                //执行观察者队列
+                // 执行观察者队列
                 dep.notify(key);
                 return result;
             }

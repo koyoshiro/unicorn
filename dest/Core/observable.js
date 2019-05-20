@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dependency_1 = require("./dependency");
 class Observable {
     constructor(object) {
-        return this._createProxy(object);
+        return this.createProxy(object);
     }
-    _createProxy(object) {
+    createProxy(object) {
         const dep = new dependency_1.default();
         const handler = {
             get(target, key, receiver) {
@@ -16,9 +16,9 @@ class Observable {
             },
             set(target, key, value, receiver) {
                 console.log(`我的${key}属性被修改为${value}了！`);
-                //内部调用对应的 Reflect 方法
+                // 内部调用对应的 Reflect 方法
                 const result = Reflect.set(target, key, value, receiver);
-                //执行观察者队列
+                // 执行观察者队列
                 dep.notify(key);
                 return result;
             }

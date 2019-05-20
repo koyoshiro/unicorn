@@ -86,19 +86,6 @@ export default class Builder {
         this.UCViewModel.init(this.__Configs__.model);
     }
 
-    // protected async model(modelParam: I_UC_Model) {
-    //     if (!modelParam) {
-    //         console.error('modelParam is undefined');
-    //         return;
-    //     }
-    //     this.UCModel = await new UC_Model(modelParam);
-    //     this.UCViewModel.init(this.UCModel.observedModel);
-    // }
-
-    // protected viewModel(vmParam: I_UC_ViewModel): void {
-    //     this.UCViewModel = new UC_ViewModel(vmParam);
-    // }
-
     // public call(builderName: string, actionName: string, payload: any) {
     //     this.Channel(builderName, actionName, payload);
     // }

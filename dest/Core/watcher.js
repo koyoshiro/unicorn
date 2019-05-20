@@ -15,9 +15,9 @@ class Watcher {
         this.key = field;
         this.callback = cb;
         this.onComputedUpdate = computedUpdate;
-        return this._defineComputed();
+        return this.defineComputed();
     }
-    _defineComputed() {
+    defineComputed() {
         const self = this;
         const onDepUpdated = (key) => __awaiter(this, void 0, void 0, function* () {
             yield console.log('wait');

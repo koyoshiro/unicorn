@@ -12,10 +12,9 @@ const linker_1 = require("./linker");
 class Dependency {
     constructor() {
         this.depArray = new Set();
-        this.depArray = new Set();
     }
     depend(key) {
-        if (linker_1.default.getDepTarget()) {
+        if (linker_1.default.getDepTarget() && !this.depArray.has(key)) {
             this.depArray.add({
                 key,
                 target: linker_1.default.getDepTarget()
@@ -24,7 +23,7 @@ class Dependency {
     }
     notify(key) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.depArray.forEach(dep => {
+            this.depArray.forEach((dep) => {
                 if (dep.key === key && dep.target) {
                     dep.target();
                 }
