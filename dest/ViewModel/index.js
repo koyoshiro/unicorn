@@ -10,6 +10,7 @@ class UC_ViewModel extends event_1.default {
         this.reactiveView = null;
         this.store = {};
         this.viewModelParams = { state: {} };
+        this.observedModel = {};
         this.dispatch = (type, payload) => {
             if (!type || type === '') {
                 return;
@@ -18,8 +19,8 @@ class UC_ViewModel extends event_1.default {
              * 判断dispatch对象是否为本viewmodel的action？
              * 若是则直接处理；
              * 若不是则调用builder中的crossCall方法处理（隐式处理所有跨模块通信）
-            */
-            if (type.split('/').length === 0) {
+             */
+            if (type.split('/').length === 1) {
                 this._doAction(type, payload);
             }
             else {
@@ -39,6 +40,7 @@ class UC_ViewModel extends event_1.default {
         this.viewModelParams = vmParam;
     }
     init(observedModel) {
+        this.observedModel = observedModel;
         const { state, actions } = this.viewModelParams;
         this.store = this._createVM(state, observedModel);
         this._bindActions(actions);

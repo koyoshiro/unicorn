@@ -1,7 +1,7 @@
 import Linker from './linker';
 export default class Watcher {
     private object: any;
-    private key: string;
+    public key: string;
     private callback: (obm: any) => void;
     private onComputedUpdate: (val: any) => void;
     constructor(obj: any, field: string, cb: () => void, computedUpdate: (val: any) => void) {
@@ -9,10 +9,10 @@ export default class Watcher {
         this.key = field;
         this.callback = cb;
         this.onComputedUpdate = computedUpdate;
-        return this._defineComputed();
+        return this.defineComputed();
     }
 
-    private _defineComputed() {
+    private defineComputed() {
         const self = this;
         const onDepUpdated = async (key: string) => {
             await console.log('wait');
