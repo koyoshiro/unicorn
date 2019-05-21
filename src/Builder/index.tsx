@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { I_UC_Builder } from '../Interface/I_UC_Builder';
 import { I_UC_ViewModel } from '../Interface/I_UC_ViewModel';
 import { I_UC_Model } from '../Interface/I_UC_Model';
@@ -55,10 +55,11 @@ export default class Builder {
 
     protected render(renderComponent: Component): Component {
         this.renderComponent = renderComponent;
-        this.wrappedComponent = connect(
+        const StoreWrapper: Component = connect(
             this.UCViewModel,
             this.renderComponent
         );
+        this.wrappedComponent = <StoreWrapper />;
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             console.log('wait autoRender');
         } else {

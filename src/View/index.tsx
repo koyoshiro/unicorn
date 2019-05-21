@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import { React } from 'react';
 
 interface IProp {
-    _change: () => void;
+    _change: (payload: any) => void;
 }
 
-const connect = (viewModel: any, RenderComponent: Component): Component => {
+const connect = (viewModel: any, RenderComponent: React.Component): React.Component => {
     class StoreWrapper extends React.Component {
         private state: any;
 
@@ -13,6 +13,8 @@ const connect = (viewModel: any, RenderComponent: Component): Component => {
             this.state = {
                 vm: viewModel.store
             };
+            props._change = this.doSomething;
+            // this.doSomething = this.doSomething.bind(this);
         }
 
         private render() {

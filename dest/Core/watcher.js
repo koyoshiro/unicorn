@@ -33,7 +33,7 @@ class Watcher {
                 linker_1.default.setDepTarget(() => {
                     onDepUpdated(key);
                 });
-                const val = self.callback();
+                const val = self.callback(self.object);
                 linker_1.default.resetDepTarget();
                 return val;
             },
