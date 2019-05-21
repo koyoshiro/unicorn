@@ -36,17 +36,16 @@ export default class UC_ViewModel extends Events {
                 this.reactiveView.setState({ key: val });
             });
             // todo test
-            viewModelState = {
-                ...{
-                    key: watcherIns.key
-                }
-            };
+            // viewModelState = Object.assign(viewModelState, {
+            //     key: watcherIns.key
+            // });
+            viewModelState[key] = watcherIns.key;
         });
-        keys.forEach(key => {
-            autoRun(() => {
-                viewModelState[key].handler(observedModel); // 直接执行关系函数，确保在使用时没有问题
-            });
-        });
+        // keys.forEach(key => {
+        //     autoRun(() => {
+        //         viewModelState[key].handler(observedModel); // 直接执行关系函数，确保在使用时没有问题
+        //     });
+        // });
         return viewModelState;
     }
 

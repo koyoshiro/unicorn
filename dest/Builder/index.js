@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = require("react");
 const Model_1 = require("../Model");
 const ViewModel_1 = require("../ViewModel");
 const View_1 = require("../View");
@@ -48,7 +49,8 @@ class Builder {
     }
     render(renderComponent) {
         this.renderComponent = renderComponent;
-        this.wrappedComponent = View_1.connect(this.UCViewModel, this.renderComponent);
+        const StoreWrapper = View_1.connect(this.UCViewModel, this.renderComponent);
+        this.wrappedComponent = react_1.default.createElement(StoreWrapper, null);
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             console.log('wait autoRender');
         }
