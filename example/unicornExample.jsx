@@ -89,20 +89,14 @@ const ucA = UC.builder({
 
 class ContextComponent extends React.Component {
   constructor(props) {
-    debugger;
-    const { dispatch } = props.viewModel,
-      { count, result } = props.viewModel.store;
+    const { dispatch } = props.viewModel;
     this.dispatch = dispatch;
-    this.state = {
-      count: count,
-      result: result
-    }
   }
   render() {
     return (
       <div>
-        <span>{this.state.count}</span>
-        <span>{this.state.result}</span>
+        <span>{this.props.viewModel.store.count}</span>
+        <span>{this.props.viewModel.store.result}</span>
         <div>
           <button onClick={() => this.dispatch('add', 2)}>add</button>
           <button onClick={() => this.dispatch(this.actions.minus)}>minus</button>

@@ -11,10 +11,8 @@ const connect = (viewModel: any, RenderComponent: React.Component): React.Compon
         constructor(props: IProp) {
             super(props);
             this.state = {
-                vm: viewModel.store
+                vm: viewModel
             };
-            props._change = this.doSomething;
-            // this.doSomething = this.doSomething.bind(this);
         }
 
         private render() {
@@ -25,13 +23,13 @@ const connect = (viewModel: any, RenderComponent: React.Component): React.Compon
             viewModel.registerView(this);
         }
 
-        public doSomething(viewModel: any) {
-            this.setState({ vm: viewModel.store });
-        }
+        // public doSomething(viewModel: any) {
+        //     this.setState({ vm: viewModel.store });
+        // }
 
-        private shouldComponentUpdate() {
-            //return false; // 模块只能被初始化一次，不允许更新
-        }
+        // private shouldComponentUpdate() {
+        //     //return false; // 模块只能被初始化一次，不允许更新
+        // }
     }
     return StoreWrapper;
 };

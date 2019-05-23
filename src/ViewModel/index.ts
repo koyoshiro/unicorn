@@ -6,7 +6,7 @@ import { autoRun } from '../Core';
 export default class UC_ViewModel extends Events {
     private builder: any;
     private actions: any = {};
-    private reactiveView: any = null;
+    public reactiveView: any = null;
     public store: any = {};
     private viewModelParams: I_UC_ViewModel = { state: {} };
     public observedModel: any = {};

@@ -50,7 +50,8 @@ export default class Builder {
             });
     }
     private *doRender() {
-        yield this.wrappedComponent.doSomething(this.UCViewModel);
+        yield this.wrappedComponent.setState({ vm: this.UCViewModel });
+        yield this.UCViewModel.reactiveView.setState({ vm: this.UCViewModel });
     }
 
     protected render(renderComponent: Component): Component {
