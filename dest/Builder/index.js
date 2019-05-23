@@ -45,7 +45,8 @@ class Builder {
         });
     }
     *doRender() {
-        yield this.wrappedComponent.doSomething(this.UCViewModel);
+        yield this.wrappedComponent.setState({ vm: this.UCViewModel });
+        yield this.UCViewModel.reactiveView.setState({ vm: this.UCViewModel });
     }
     render(renderComponent) {
         this.renderComponent = renderComponent;
