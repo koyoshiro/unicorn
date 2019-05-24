@@ -50,13 +50,14 @@ class UC_ViewModel extends event_1.default {
         keys.forEach(key => {
             const watcherIns = new Core_1.Watcher(observedModel, key, state[key].handler, (val) => {
                 state[key].onComputedUpdate(val);
-                this.reactiveView.setState({ key: val });
+                this.store[key] = val;
+                this.reactiveView.setState({ vm: this });
             });
             // todo test
             // viewModelState = Object.assign(viewModelState, {
             //     key: watcherIns.key
             // });
-            viewModelState[key] = watcherIns.key;
+            viewModelState[key] = watcherIns[key];
         });
         // keys.forEach(key => {
         //     autoRun(() => {

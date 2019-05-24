@@ -98,7 +98,7 @@ class ContextComponent extends React.Component {
         <span>{this.props.viewModel.store.count}</span>
         <span>{this.props.viewModel.store.result}</span>
         <div>
-          <button onClick={() => this.dispatch('add', 2)}>add</button>
+          <button onClick={() => this.dispatch('ucA/add', 2)}>add</button>
           <button onClick={() => this.dispatch(this.actions.minus)}>minus</button>
           <button onClick={() => this.dispatch(this.actions.asyncAdd)}>async</button>
           <button onClick={() => this.dispatch(this.actions.asyncRequire)}>async</button>

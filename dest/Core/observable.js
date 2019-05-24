@@ -9,7 +9,7 @@ class Observable {
         const dep = new dependency_1.default();
         const handler = {
             get(target, key, receiver) {
-                // console.log(`我的${key}属性被读取了！`);
+                console.log(`我的${key}属性被读取了！`);
                 // 加入观察者队列
                 dep.depend(key);
                 return Reflect.get(target, key, receiver);
