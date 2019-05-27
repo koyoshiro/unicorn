@@ -9,10 +9,10 @@ export default class UC_Model implements I_UC_Model {
             console.error('modelParam is error');
             return;
         }
-        this.observedModel = this._createObservable(modelData);
+        this.observedModel = this.createObservable(modelData);
     }
 
-    private _createObservable = (dataSource: any) => {
+    private createObservable = (dataSource: any) => {
         if (typeof dataSource === 'object') {
             return new Observable(dataSource);
         } else {
@@ -20,6 +20,15 @@ export default class UC_Model implements I_UC_Model {
             return null;
         }
     };
+
+    private ergodicDataSource(dataSource: any){
+        const keys = Object.keys(dataSource);
+        keys.forEach(key => {
+           if(typeof dataSource[key] === 'object'){
+               
+           }
+        });
+    }
 
     public replaceModel(){
         
