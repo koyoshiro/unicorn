@@ -1,7 +1,7 @@
 import { I_UC_Model } from '../Interface/I_UC_Model';
 import { Observable } from '../Core/index';
 export default class UC_Model implements I_UC_Model {
-    public readonly observedModel: any = null;
+    public observedModel: any = null;
     public readonly Effect: any;
 
     public constructor(modelData: any) {
@@ -9,28 +9,26 @@ export default class UC_Model implements I_UC_Model {
             console.error('modelParam is error');
             return;
         }
-        this.observedModel = this.createObservable(modelData);
+        this.createObservable(modelData);
     }
 
-    private createObservable = (dataSource: any) => {
-        if (typeof dataSource === 'object') {
-            return new Observable(dataSource);
-        } else {
-            console.error('参数数据需为对象');
-            return null;
-        }
-    };
+    private createObservable(dataSource: any) {
+        this.observedModel = this.recursiveDataSource(dataSource);
+    }
 
-    private ergodicDataSource(dataSource: any){
-        const keys = Object.keys(dataSource);
-        keys.forEach(key => {
-           if(typeof dataSource[key] === 'object'){
-               
-           }
+    private recursiveDataSource(dataSource: any) {
+        // 对数据结构中统一处理为Proxy类型
+        const obsField: any = new Observable(dataSource);
+
+        // 遍历Proxy内容中的每个字段
+        Object.keys(obsField).forEach((key: any) => {
+            // 若为object或array则递归
+            if (typeof obsField[key] === 'object' || Array.isArray(obsField[key])) {
+                obsField[key] = this.recursiveDataSource(obsField[key]); // 覆盖原字段的值为Proxy类型
+            }
         });
+        return obsField;
     }
 
-    public replaceModel(){
-        
-    }
+    public replaceModel() {}
 }
