@@ -31,15 +31,13 @@ export default class UC_ViewModel extends Events {
         let viewModelState: any = {};
         const keys = Object.keys(state);
         keys.forEach(key => {
+            // todo 根据state[key].map去递归生成watcher实例
+            // todo 递归时需要实现所有非object和array 的 直接可以使用的值
             const watcherIns: any = new Watcher(observedModel, key, state[key].handler, (val: any) => {
                 state[key].onComputedUpdate(val);
                 this.store[key] = val;
                 this.reactiveView.setState({ vm: this });
             });
-            // todo test
-            // viewModelState = Object.assign(viewModelState, {
-            //     key: watcherIns.key
-            // });
             viewModelState[key] = watcherIns[key];
         });
         // keys.forEach(key => {
@@ -49,6 +47,24 @@ export default class UC_ViewModel extends Events {
         // });
         return viewModelState;
     }
+
+    // private recursiveObservableModel(observableModel: any) {
+    //     // 对数据结构中统一处理为Proxy类型
+    //     const obsField: any = new Watcher(observedModel, key, state[key].handler, (val: any) => {
+    //         state[key].onComputedUpdate(val);
+    //         this.store[key] = val;
+    //         this.reactiveView.setState({ vm: this });
+    //     });
+
+    //     // 遍历Proxy内容中的每个字段
+    //     Object.keys(obsField).forEach((key: any) => {
+    //         // 若为object或array则递归
+    //         if (typeof obsField[key] === 'object' || Array.isArray(obsField[key])) {
+    //             obsField[key] = this.recursiveDataSource(obsField[key]); // 覆盖原字段的值为Proxy类型
+    //         }
+    //     });
+    //     return obsField;
+    // }
 
     private bindActions(actions: any) {
         Object.keys(actions).forEach(type => {
