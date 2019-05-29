@@ -7,11 +7,11 @@ const ucA = UC.builder({
     model: {},
     state: {
         count: {
-            map: obm => {
+            map: (obm) => {
                 return obm.array[0];
             },
             handler: ()=> {
-                return means.val;
+                return map.val;
             },
             onComputedUpdate: () => {}
         },

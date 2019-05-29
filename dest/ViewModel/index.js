@@ -41,23 +41,35 @@ class UC_ViewModel extends event_1.default {
     init(observedModel) {
         this.observedModel = observedModel;
         const { state, actions } = this.viewModelParams;
-        this.store = this.createVM(state, observedModel);
+        this.store = this.createVM(state);
         this.bindActions(actions);
     }
-    createVM(state, observedModel) {
+    createVM(state) {
         let viewModelState = {};
         const keys = Object.keys(state);
         keys.forEach(key => {
-            const watcherIns = new Core_1.Watcher(observedModel, key, state[key].handler, (val) => {
+            /*
+            map: obm => {
+                return obm.array[0];
+            }
+            */
+            // 根据state[key].map去递归生成watcher实例
+            const watcherInstance = new Core_1.Watcher(state[key].map.bind(this.observedModel), key, state[key].handler, (val) => {
                 state[key].onComputedUpdate(val);
                 this.store[key] = val;
                 this.reactiveView.setState({ vm: this });
             });
-            // todo test
-            // viewModelState = Object.assign(viewModelState, {
-            //     key: watcherIns.key
-            // });
-            viewModelState[key] = watcherIns[key];
+            viewModelState[key] = watcherInstance[key];
+        });
+        // 递归时需要实现所有非object和array 的 直接可以使用的值
+        Object.keys(this.observedModel).forEach((key) => {
+            const baseWatcherInstance = new Core_1.Watcher(this.observedModel, key, () => {
+                return this.observedModel[key];
+            }, (val) => {
+                this.store[key] = val;
+                this.reactiveView.setState({ vm: this });
+            });
+            viewModelState[key] = baseWatcherInstance[key];
         });
         // keys.forEach(key => {
         //     autoRun(() => {
