@@ -38,7 +38,7 @@ export default class UC_ViewModel extends Events {
             */
             // 根据state[key].map去递归生成watcher实例
             const watcherInstance: any = new Watcher(
-                state[key].map.bind(this.observedModel),
+                state[key].map(this.observedModel),
                 key,
                 state[key].handler,
                 (val: any) => {
@@ -72,6 +72,9 @@ export default class UC_ViewModel extends Events {
         return viewModelState;
     }
 
+    // add(model,payload) {
+    //     model.array[0].val = payload;
+    // }
     private bindActions(actions: any) {
         Object.keys(actions).forEach(type => {
             const action = actions[type];
