@@ -54,7 +54,7 @@ class UC_ViewModel extends event_1.default {
             }
             */
             // 根据state[key].map去递归生成watcher实例
-            const watcherInstance = new Core_1.Watcher(state[key].map.bind(this.observedModel), key, state[key].handler, (val) => {
+            const watcherInstance = new Core_1.Watcher(state[key].map(this.observedModel), key, state[key].handler, (val) => {
                 state[key].onComputedUpdate(val);
                 this.store[key] = val;
                 this.reactiveView.setState({ vm: this });
@@ -78,6 +78,9 @@ class UC_ViewModel extends event_1.default {
         // });
         return viewModelState;
     }
+    // add(model,payload) {
+    //     model.array[0].val = payload;
+    // }
     bindActions(actions) {
         Object.keys(actions).forEach(type => {
             const action = actions[type];

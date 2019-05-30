@@ -19,9 +19,9 @@ export default class Watcher {
 
             if (!Linker.computedArrayContains(key)) {
                 Linker.pushComputedArray(key);
-                const val = self.callback(self.object);
-                this.onComputedUpdate(val);
             }
+            const val = self.callback(self.object);
+            this.onComputedUpdate(val);
         };
 
         const handler = {
