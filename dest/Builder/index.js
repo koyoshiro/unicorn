@@ -4,22 +4,22 @@ const react_1 = require("react");
 const Model_1 = require("../Model");
 const ViewModel_1 = require("../ViewModel");
 const View_1 = require("../View");
-const default_1 = require("./default");
 class Builder {
-    // private iteratorStart: any = this.doStart();
-    constructor(builderParams) {
+    constructor(builderParams, tunnel) {
         this.__NameSpace__ = '';
         this.__Configs__ = {};
         this.UCModel = null;
         this.UCViewModel = null;
         this.observedModel = null;
-        this.wrappedComponent = default_1.default;
+        this.wrappedComponent = defaultComponent;
         this.iteratorRender = this.doRender();
+        this.tunnel = () => { };
         if (!builderParams) {
             return;
         }
         this.__Configs__ = builderParams;
         this.__NameSpace__ = this.__Configs__.namespace;
+        this.tunnel = tunnel;
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             this.doSetup(this.__Configs__.subscriptions.setup);
         }
@@ -30,7 +30,7 @@ class Builder {
             state: this.__Configs__.state,
             actions: this.__Configs__.actions
         };
-        this.UCViewModel = new ViewModel_1.default(viewModelParams);
+        this.UCViewModel = new ViewModel_1.default(viewModelParams, this.call);
     }
     doSetup(setup) {
         return setup()
@@ -59,22 +59,19 @@ class Builder {
             this.iteratorRender.next();
         }
     }
-    // private *doStart(wrappedComponent?: Component) {
-    //     yield (this.wrappedComponent = wrappedComponent);
-    //     return yield this.wrappedComponent;
-    // }
-    // protected start() {
-    //     // this.iteratorStart = this.doStart();
-    //     if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
-    //         console.log('wait autoRender');
-    //     } else {
-    //         this.iteratorStart.next();
-    //         return this.iteratorStart.next();
-    //     }
-    // }
     replaceModel(modelData) {
         this.__Configs__.model = new Model_1.default(modelData).observedModel;
         this.UCViewModel.init(this.__Configs__.model);
+    }
+    call(dispatchTarget, payload) {
+        const builderName = dispatchTarget.split('/')[0];
+        const actionName = dispatchTarget.split('/')[1];
+        if (builderName === this.__NameSpace__) {
+            this.UCViewModel.dispatch(payload);
+        }
+        else {
+            this.tunnel(builderName, actionName, payload);
+        }
     }
 }
 exports.default = Builder;

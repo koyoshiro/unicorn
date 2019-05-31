@@ -4,20 +4,21 @@ import { Watcher } from '../Core';
 import { autoRun } from '../Core';
 
 export default class UC_ViewModel extends Events {
-    private builder: any;
+    private call: (dispatchTarget: string, payload?: any) => void = () => {};
     private actions: any = {};
     public reactiveView: any = null;
     public store: any = {};
     private viewModelParams: I_UC_ViewModel = { state: {} };
     public observedModel: any = {};
 
-    constructor(vmParam: I_UC_ViewModel) {
+    constructor(vmParam: I_UC_ViewModel, call: (dispatchTarget: string, payload?: any) => void) {
         super();
         if (!vmParam) {
             console.error('vm params is undefined');
             return;
         }
         this.viewModelParams = vmParam;
+        this.call = call;
     }
 
     public init(observedModel: any) {
@@ -100,20 +101,12 @@ export default class UC_ViewModel extends Events {
         /*
          * 判断dispatch对象是否为本viewmodel的action？
          * 若是则直接处理；
-         * 若不是则调用builder中的crossCall方法处理（隐式处理所有跨模块通信）
+         * 若不是则调用builder中的call方法处理（隐式处理所有跨模块通信）
          */
         if (type.split('/').length === 1) {
             this.doAction(type, payload);
         } else {
-            const dispatchTarget: string[] = type.split('/'),
-                targetBuilderName: string = dispatchTarget[0],
-                targetBuilderAction: string = dispatchTarget[1];
-
-            if (targetBuilderName === this.builder.__NameSpace__) {
-                this.doAction(targetBuilderAction, payload);
-            } else {
-                this.builder.call(targetBuilderName, targetBuilderAction, payload);
-            }
+            this.call(type, payload);
         }
     };
 

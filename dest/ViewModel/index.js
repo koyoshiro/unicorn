@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const event_1 = require("./event");
 const Core_1 = require("../Core");
 class UC_ViewModel extends event_1.default {
-    constructor(vmParam) {
+    constructor(vmParam, call) {
         super();
+        this.call = () => { };
         this.actions = {};
         this.reactiveView = null;
         this.store = {};
@@ -17,19 +18,13 @@ class UC_ViewModel extends event_1.default {
             /*
              * 判断dispatch对象是否为本viewmodel的action？
              * 若是则直接处理；
-             * 若不是则调用builder中的crossCall方法处理（隐式处理所有跨模块通信）
+             * 若不是则调用builder中的call方法处理（隐式处理所有跨模块通信）
              */
             if (type.split('/').length === 1) {
                 this.doAction(type, payload);
             }
             else {
-                const dispatchTarget = type.split('/'), targetBuilderName = dispatchTarget[0], targetBuilderAction = dispatchTarget[1];
-                if (targetBuilderName === this.builder.__NameSpace__) {
-                    this.doAction(targetBuilderAction, payload);
-                }
-                else {
-                    this.builder.call(targetBuilderName, targetBuilderAction, payload);
-                }
+                this.call(type, payload);
             }
         };
         if (!vmParam) {
@@ -37,6 +32,7 @@ class UC_ViewModel extends event_1.default {
             return;
         }
         this.viewModelParams = vmParam;
+        this.call = call;
     }
     init(observedModel) {
         this.observedModel = observedModel;
