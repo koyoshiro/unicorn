@@ -6,7 +6,6 @@ import { I_UC_Model } from '../Interface/I_UC_Model';
 import UC_Model from '../Model';
 import UC_ViewModel from '../ViewModel';
 import { connect } from '../View';
-import defaultComponent from './default';
 
 export default class Builder {
     public readonly __NameSpace__: string = '';
@@ -18,14 +17,18 @@ export default class Builder {
     private renderComponent: Component;
     private wrappedComponent: Component = defaultComponent;
     private iteratorRender: any = this.doRender();
-    // private iteratorStart: any = this.doStart();
+    private tunnel: (builderName: string, actionName: string, payload?: any) => void = () => {};
 
-    public constructor(builderParams: I_UC_Builder) {
+    public constructor(
+        builderParams: I_UC_Builder,
+        tunnel: (builderName: string, actionName: string, payload?: any) => void
+    ) {
         if (!builderParams) {
             return;
         }
         this.__Configs__ = builderParams;
         this.__NameSpace__ = this.__Configs__.namespace;
+        this.tunnel = tunnel;
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             this.doSetup(this.__Configs__.subscriptions.setup);
         } else {
@@ -35,7 +38,7 @@ export default class Builder {
             state: this.__Configs__.state,
             actions: this.__Configs__.actions
         };
-        this.UCViewModel = new UC_ViewModel(viewModelParams);
+        this.UCViewModel = new UC_ViewModel(viewModelParams, this.call);
     }
     private doSetup(setup: any) {
         return setup()
@@ -68,29 +71,21 @@ export default class Builder {
         }
     }
 
-    // private *doStart(wrappedComponent?: Component) {
-    //     yield (this.wrappedComponent = wrappedComponent);
-    //     return yield this.wrappedComponent;
-    // }
-
-    // protected start() {
-    //     // this.iteratorStart = this.doStart();
-    //     if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
-    //         console.log('wait autoRender');
-    //     } else {
-    //         this.iteratorStart.next();
-    //         return this.iteratorStart.next();
-    //     }
-    // }
-
     protected replaceModel(modelData: any) {
         this.__Configs__.model = new UC_Model(modelData).observedModel;
         this.UCViewModel.init(this.__Configs__.model);
     }
 
-    // public call(builderName: string, actionName: string, payload: any) {
-    //     this.Channel(builderName, actionName, payload);
-    // }
+    protected call(dispatchTarget: string, payload?: any) {
+        const builderName: string = dispatchTarget.split('/')[0];
+        const actionName: string = dispatchTarget.split('/')[1];
+
+        if (builderName === this.__NameSpace__) {
+            this.UCViewModel.dispatch(payload);
+        } else {
+            this.tunnel(builderName, actionName, payload);
+        }
+    }
 
     // public sendEvent(eventName: string) {
     //     this.Broadcast.sendEvent(eventName); //todo
