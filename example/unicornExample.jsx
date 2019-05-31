@@ -6,27 +6,30 @@ const ucA = UC.builder({
     namespace: 'ucA',
     model: {},
     state: {
-        count: {
+        arrayVal: {
             map: obm => {
                 debugger;
                 return obm.array[0];
             },
-            handler: obm => {
+            handler: map => {
                 debugger;
-                return obm.val;
+                return map.val;
             },
             onComputedUpdate: () => {}
+        },
+        treeVal: {
+            map: obm => {
+                debugger;
+                return obm.root.fatherNode.childNode;
+            },
+            handler: map => {
+                debugger;
+                return map.node;
+            },
+            onComputedUpdate: handleRst => {
+                console.log(handleRst ? 'yes' : 'no');
+            }
         }
-        // ,
-        // result: {
-        //   handler: (obm) => {
-        //     debugger;
-        //     return obm.root.fatherNode.childNode.node;
-        //   },
-        //   onComputedUpdate: handleRst => {
-        //     console.log(handleRst ? 'yes' : 'no');
-        //   }
-        // }
     },
     actions: {
         // payload 需要传递的信息
@@ -39,7 +42,9 @@ const ucA = UC.builder({
             this.observedModel.array[0].val--;
         },
         asyncAdd() {
-            this.observedModel.root = { fatherNode: { childNode: { node: 6 } } };
+            setTimeout(() => {
+                this.observedModel.root.fatherNode.childNode.node += 8;
+            }, 500);
         },
         asyncRequire() {}
     },
@@ -95,11 +100,18 @@ class ContextComponent extends React.Component {
         const { dispatch } = props.viewModel;
         this.dispatch = dispatch;
     }
+
+    compare() {
+        if (this.props.viewModel.store.arrayVal < this.props.viewModel.store.treeVal) {
+            return <span>{this.props.viewModel.store.str}</span>;
+        }
+        return <span>{this.props.viewModel.store.num}</span>;
+    }
+
     render() {
-        debugger;
         return (
             <div>
-                <span>{this.props.viewModel.store.count}</span>
+                <span>{this.props.viewModel.store.arrayVal}</span>
                 <div>
                     <button onClick={() => this.dispatch('add', 2)}>add</button>
                     <button onClick={() => this.dispatch('minus')}>minus</button>
@@ -110,6 +122,8 @@ class ContextComponent extends React.Component {
                     <button onClick={() => this.sendEvent('AAA')}>sendEvent</button>
                     <button onClick={() => this.crossCall('ucB', 'add')}>crossCall</button>
                 </div>
+                <span>{this.props.viewModel.store.treeVal}</span>
+                {this.compare()}
             </div>
         );
     }
