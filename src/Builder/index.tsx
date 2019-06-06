@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { I_UC_Builder } from '../Interface/I_UC_Builder';
 import { I_UC_ViewModel } from '../Interface/I_UC_ViewModel';
 import { I_UC_Model } from '../Interface/I_UC_Model';
+import { I_Broadcast_Subject } from '../Interface/I_Broadcast_Subject';
 
 import UC_Model from '../Model';
 import UC_ViewModel from '../ViewModel';
@@ -15,13 +16,15 @@ export default class Builder {
 
     protected observedModel: any = null;
     private renderComponent: Component;
-    private wrappedComponent: Component = defaultComponent;
+    private wrappedComponent: Component = null;
     private iteratorRender: any = this.doRender();
     private tunnel: (builderName: string, actionName: string, payload?: any) => void = () => {};
+    private signal: any;
 
     public constructor(
         builderParams: I_UC_Builder,
-        tunnel: (builderName: string, actionName: string, payload?: any) => void
+        tunnel: (builderName: string, actionName: string, payload?: any) => void,
+        signal: any
     ) {
         if (!builderParams) {
             return;
@@ -29,6 +32,7 @@ export default class Builder {
         this.__Configs__ = builderParams;
         this.__NameSpace__ = this.__Configs__.namespace;
         this.tunnel = tunnel;
+        this.signal = signal;
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             this.doSetup(this.__Configs__.subscriptions.setup);
         } else {
@@ -87,15 +91,18 @@ export default class Builder {
         }
     }
 
-    // public sendEvent(eventName: string) {
-    //     this.Broadcast.sendEvent(eventName); //todo
-    // }
+    protected doSubscribe(behaviorName: string): I_Broadcast_Subject | undefined {
+        if (behaviorName) {
+            return this.signal.doSubscribe(behaviorName);
+        }
+        return undefined;
+    }
 
-    // public subscribe(eventName: string, eventCallback: (p: any) => void) {
-    //     this.Broadcast.subscribe(eventName, eventCallback);
-    // }
+    protected subscribe(behaviorName: string, behavior: (p: I_Broadcast_Subject) => void) {
+        this.signal.subscribe(behaviorName, behavior);
+    }
 
-    // public unSubscribe(eventName: string) {
-    //     this.Broadcast.unSubscribe(eventName);
-    // }
+    protected unSubscribe(behaviorName: string) {
+        this.signal.unSubscribe(behaviorName);
+    }
 }
