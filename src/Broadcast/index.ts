@@ -1,25 +1,29 @@
-import { I_Broadcast_Subject } from '../Interface/I_Broadcast_Subject';
+import { IBroadcastSubject, IBroadcast } from '../Interface/I_Broadcast';
 
-export default class Broadcast {
-    private __SubscribeMap__: Map<string, I_Broadcast_Subject> = new Map<string, I_Broadcast_Subject>();
+export default class Broadcast implements IBroadcast {
+    private __SUBSCRIBE_MAP__: Map<string, IBroadcastSubject>;
 
-    public subscribe(behaviorName: string, behavior: I_Broadcast_Subject) {
+    constructor() {
+        this.__SUBSCRIBE_MAP__ = new Map<string, IBroadcastSubject>();
+    }
+
+    public subscribe(behaviorName: string, behavior: IBroadcastSubject): void {
         if (behaviorName && behavior) {
-            if (!this.__SubscribeMap__.has(behaviorName)) {
-                this.__SubscribeMap__.set(behaviorName, behavior);
+            if (!this.__SUBSCRIBE_MAP__.has(behaviorName)) {
+                this.__SUBSCRIBE_MAP__.set(behaviorName, behavior);
             }
         }
     }
 
-    public unSubscribe(behaviorName: string) {
-        if (behaviorName && this.__SubscribeMap__.has(behaviorName)) {
-            this.__SubscribeMap__.delete(behaviorName);
+    public unSubscribe(behaviorName: string): void {
+        if (behaviorName && this.__SUBSCRIBE_MAP__.has(behaviorName)) {
+            this.__SUBSCRIBE_MAP__.delete(behaviorName);
         }
     }
 
-    public getSubscribe(behaviorName: string): I_Broadcast_Subject | undefined {
-        if (behaviorName && this.__SubscribeMap__.has(behaviorName)) {
-            const broadcastSubscribe: I_Broadcast_Subject | undefined = this.__SubscribeMap__.get(behaviorName);
+    public getSubscribe(behaviorName: string): IBroadcastSubject | undefined {
+        if (behaviorName && this.__SUBSCRIBE_MAP__.has(behaviorName)) {
+            const broadcastSubscribe: IBroadcastSubject | undefined = this.__SUBSCRIBE_MAP__.get(behaviorName);
             return broadcastSubscribe;
         }
         return undefined;
