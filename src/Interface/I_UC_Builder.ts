@@ -1,18 +1,27 @@
-import { I_Builder_State } from './I_UC_Builder';
-export interface I_Builder_State {
-    handler : ()=>void;
-    onComputedUpdate: ()=>void;
+import { IBroadcastSubject } from './I_Broadcast';
+import React, { Component } from 'react';
+export interface IState {
+    handler: () => void;
+    onComputedUpdate: () => void;
 }
 
-export interface I_Builder_Subs{
-    setup?:()=>void
+export interface ISubscription {
+    setup?: () => void;
 }
 
-export interface I_UC_Builder{
+export interface IBuilderParam {
     namespace: string;
-    model?: {},
+    model?: {};
     state: any;
     actions: any;
     effects?: any;
-    subscriptions?:I_Builder_Subs;
+    subscriptions?: ISubscription;
+}
+
+export interface IBuilder {
+    render: (renderComponent: Component) => Component;
+    call: (dispatchTarget: string, payload?: any) => void;
+    doSubscribe: (behaviorName: string) => IBroadcastSubject | undefined;
+    subscribe: (behaviorName: string, behavior: (p: IBroadcastSubject) => void) => void;
+    unSubscribe: (behaviorName: string) => void;
 }

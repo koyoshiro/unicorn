@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { I_UC_Builder } from '../Interface/I_UC_Builder';
 import { I_UC_ViewModel } from '../Interface/I_UC_ViewModel';
 import { I_UC_Model } from '../Interface/I_UC_Model';
-import { I_Broadcast_Subject } from '../Interface/I_Broadcast_Subject';
+import { IBroadcastSubject, ISignal } from '../Interface/I_Broadcast';
 
 import UC_Model from '../Model';
 import UC_ViewModel from '../ViewModel';
@@ -18,13 +18,13 @@ export default class Builder {
     private renderComponent: Component;
     private wrappedComponent: Component = null;
     private iteratorRender: any = this.doRender();
-    private tunnel: (builderName: string, actionName: string, payload?: any) => void = () => {};
-    private signal: any;
+    private tunnel: (builderName: string, actionName: string, payload?: any) => void;
+    private signal: ISignal;
 
     public constructor(
         builderParams: I_UC_Builder,
         tunnel: (builderName: string, actionName: string, payload?: any) => void,
-        signal: any
+        builderSignal: ISignal
     ) {
         if (!builderParams) {
             return;
@@ -32,7 +32,7 @@ export default class Builder {
         this.__Configs__ = builderParams;
         this.__NameSpace__ = this.__Configs__.namespace;
         this.tunnel = tunnel;
-        this.signal = signal;
+        this.signal = builderSignal;
         if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
             this.doSetup(this.__Configs__.subscriptions.setup);
         } else {
@@ -80,7 +80,7 @@ export default class Builder {
         this.UCViewModel.init(this.__Configs__.model);
     }
 
-    protected call(dispatchTarget: string, payload?: any) {
+    protected call(dispatchTarget: string, payload?: any): void {
         const builderName: string = dispatchTarget.split('/')[0];
         const actionName: string = dispatchTarget.split('/')[1];
 
@@ -91,14 +91,14 @@ export default class Builder {
         }
     }
 
-    protected doSubscribe(behaviorName: string): I_Broadcast_Subject | undefined {
+    protected doSubscribe(behaviorName: string): IBroadcastSubject | undefined {
         if (behaviorName) {
             return this.signal.doSubscribe(behaviorName);
         }
         return undefined;
     }
 
-    protected subscribe(behaviorName: string, behavior: (p: I_Broadcast_Subject) => void) {
+    protected subscribe(behaviorName: string, behavior: (p: IBroadcastSubject) => void): void {
         this.signal.subscribe(behaviorName, behavior);
     }
 
