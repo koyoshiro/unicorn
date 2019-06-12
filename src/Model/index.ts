@@ -1,8 +1,7 @@
-import { I_UC_Model } from '../Interface/I_UC_Model';
+import { IModel } from '../Interface/I_UC_Model';
 import { Observable } from '../Core/index';
-export default class UC_Model implements I_UC_Model {
+export default class UCModel implements IModel {
     public observedModel: any = null;
-    public readonly Effect: any;
 
     public constructor(modelData: any) {
         if (!modelData) {
@@ -21,7 +20,7 @@ export default class UC_Model implements I_UC_Model {
         const obsField: any = new Observable(dataSource);
 
         // 遍历Proxy内容中的每个字段
-        Object.keys(obsField).forEach((key: any) => {
+        Object.keys(obsField).forEach((key: string) => {
             // 若为object或array则递归
             if (typeof obsField[key] === 'object' || Array.isArray(obsField[key])) {
                 obsField[key] = this.recursiveDataSource(obsField[key]); // 覆盖原字段的值为Proxy类型
@@ -29,6 +28,4 @@ export default class UC_Model implements I_UC_Model {
         });
         return obsField;
     }
-
-    public replaceModel() {}
 }

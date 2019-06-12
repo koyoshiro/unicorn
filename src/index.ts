@@ -21,7 +21,7 @@ export default class Unicorn {
             return null;
         }
         this.__BUILD_RECORD__.add(builderParams.namespace);
-        const builderInstance = new Builder(builderParams, this.tunnel, this.signal);
+        const builderInstance = new Builder(builderParams, this.tunnel, this.signal());
         this.__BUILD_STACK__.push({
             key: builderParams.namespace,
             instance: builderInstance

@@ -6,7 +6,7 @@ export interface IState {
 }
 
 export interface ISubscription {
-    setup?: () => void;
+    setup?: () => Promise<any>;
 }
 
 export interface IBuilderParam {

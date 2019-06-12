@@ -13,6 +13,7 @@ export default class Watcher {
     }
 
     private defineComputed() {
+        // tslint:disable-next-line:no-this-assignment
         const self = this;
         const onDepUpdated = async (key: string) => {
             await console.log('wait');

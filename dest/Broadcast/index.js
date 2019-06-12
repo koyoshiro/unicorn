@@ -2,24 +2,26 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Broadcast {
     constructor() {
-        this.__SubscribeMap__ = new Map();
+        this.__SUBSCRIBE_MAP__ = new Map();
     }
-    subscribe(eventName, behavior) {
-        if (!this.__SubscribeMap__.has(eventName)) {
-            this.__SubscribeMap__.set(eventName, behavior);
+    subscribe(behaviorName, behavior) {
+        if (behaviorName && behavior) {
+            if (!this.__SUBSCRIBE_MAP__.has(behaviorName)) {
+                this.__SUBSCRIBE_MAP__.set(behaviorName, behavior);
+            }
         }
     }
-    unSubscribe(eventName) {
-        if (this.__SubscribeMap__.has(eventName)) {
-            this.__SubscribeMap__.delete(eventName);
+    unSubscribe(behaviorName) {
+        if (behaviorName && this.__SUBSCRIBE_MAP__.has(behaviorName)) {
+            this.__SUBSCRIBE_MAP__.delete(behaviorName);
         }
     }
-    sendEvent(eventName) {
-        let broadcastSub = null;
-        if (this.__SubscribeMap__.has(eventName)) {
-            broadcastSub = this.__SubscribeMap__.get(eventName);
+    getSubscribe(behaviorName) {
+        if (behaviorName && this.__SUBSCRIBE_MAP__.has(behaviorName)) {
+            const broadcastSubscribe = this.__SUBSCRIBE_MAP__.get(behaviorName);
+            return broadcastSubscribe;
         }
-        return broadcastSub;
+        return undefined;
     }
 }
 exports.default = Broadcast;

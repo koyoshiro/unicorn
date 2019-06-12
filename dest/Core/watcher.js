@@ -18,6 +18,7 @@ class Watcher {
         return this.defineComputed();
     }
     defineComputed() {
+        // tslint:disable-next-line:no-this-assignment
         const self = this;
         const onDepUpdated = (key) => __awaiter(this, void 0, void 0, function* () {
             yield console.log('wait');
