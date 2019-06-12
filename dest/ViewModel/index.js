@@ -1,32 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const event_1 = require("./event");
 const Core_1 = require("../Core");
-class UC_ViewModel extends event_1.default {
+// import { autoRun } from '../Core';
+class UCViewModel {
     constructor(vmParam, call) {
-        super();
-        this.call = () => { };
         this.actions = {};
         this.reactiveView = null;
         this.store = {};
         this.viewModelParams = { state: {} };
         this.observedModel = {};
-        this.dispatch = (type, payload) => {
-            if (!type || type === '') {
-                return;
-            }
-            /*
-             * 判断dispatch对象是否为本viewmodel的action？
-             * 若是则直接处理；
-             * 若不是则调用builder中的call方法处理（隐式处理所有跨模块通信）
-             */
-            if (type.split('/').length === 1) {
-                this.doAction(type, payload);
-            }
-            else {
-                this.call(type, payload);
-            }
-        };
         if (!vmParam) {
             console.error('vm params is undefined');
             return;
@@ -41,9 +23,9 @@ class UC_ViewModel extends event_1.default {
         this.bindActions(actions);
     }
     createVM(state) {
-        let viewModelState = {};
+        const viewModelState = {};
         const keys = Object.keys(state);
-        keys.forEach(key => {
+        keys.forEach((key) => {
             /*
             map: obm => {
                 return obm.array[0];
@@ -78,7 +60,7 @@ class UC_ViewModel extends event_1.default {
     //     model.array[0].val = payload;
     // }
     bindActions(actions) {
-        Object.keys(actions).forEach(type => {
+        Object.keys(actions).forEach((type) => {
             const action = actions[type];
             const callback = (payload) => {
                 action.call(this, payload);
@@ -93,10 +75,26 @@ class UC_ViewModel extends event_1.default {
         }
         action(payload);
     }
+    dispatch(type, payload) {
+        if (!type || type === '') {
+            return;
+        }
+        /*
+         * 判断dispatch对象是否为本viewmodel的action？
+         * 若是则直接处理；
+         * 若不是则调用builder中的call方法处理（隐式处理所有跨模块通信）
+         */
+        if (type.split('/').length === 1) {
+            this.doAction(type, payload);
+        }
+        else {
+            this.call(type, payload);
+        }
+    }
     registerView(reactiveView) {
         if (this.reactiveView === null) {
             this.reactiveView = reactiveView;
         }
     }
 }
-exports.default = UC_ViewModel;
+exports.default = UCViewModel;

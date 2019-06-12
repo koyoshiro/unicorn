@@ -1,18 +1,16 @@
-import { I_UC_ViewModel } from '../Interface/I_UC_ViewModel';
-import Events from './event';
+import { IViewModel, IViewModelParams } from '../Interface/I_UC_ViewModel';
 import { Watcher } from '../Core';
-import { autoRun } from '../Core';
+// import { autoRun } from '../Core';
 
-export default class UC_ViewModel extends Events {
-    private call: (dispatchTarget: string, payload?: any) => void = () => {};
+export default class UCViewModel implements IViewModel {
+    private call: (dispatchTarget: string, payload?: any) => void;
     private actions: any = {};
     public reactiveView: any = null;
     public store: any = {};
-    private viewModelParams: I_UC_ViewModel = { state: {} };
+    private viewModelParams: IViewModelParams = { state: {} };
     public observedModel: any = {};
 
-    constructor(vmParam: I_UC_ViewModel, call: (dispatchTarget: string, payload?: any) => void) {
-        super();
+    constructor(vmParam: IViewModelParams, call: (dispatchTarget: string, payload?: any) => void) {
         if (!vmParam) {
             console.error('vm params is undefined');
             return;
@@ -21,7 +19,7 @@ export default class UC_ViewModel extends Events {
         this.call = call;
     }
 
-    public init(observedModel: any) {
+    public init(observedModel: any): void {
         this.observedModel = observedModel;
         const { state, actions } = this.viewModelParams;
         this.store = this.createVM(state);
@@ -29,13 +27,13 @@ export default class UC_ViewModel extends Events {
     }
 
     private createVM(state: any) {
-        let viewModelState: any = {};
+        const viewModelState: any = {};
         const keys = Object.keys(state);
-        keys.forEach(key => {
+        keys.forEach((key: string) => {
             /*
             map: obm => {
                 return obm.array[0];
-            } 
+            }
             */
             // 根据state[key].map去递归生成watcher实例
             const watcherInstance: any = new Watcher(
@@ -51,7 +49,7 @@ export default class UC_ViewModel extends Events {
             viewModelState[key] = watcherInstance[key];
         });
         // 递归时需要实现所有非object和array 的 直接可以使用的值
-        Object.keys(this.observedModel).forEach((key: any) => {
+        Object.keys(this.observedModel).forEach((key: string) => {
             const baseWatcherInstance: any = new Watcher(
                 this.observedModel,
                 key,
@@ -77,7 +75,7 @@ export default class UC_ViewModel extends Events {
     //     model.array[0].val = payload;
     // }
     private bindActions(actions: any) {
-        Object.keys(actions).forEach(type => {
+        Object.keys(actions).forEach((type: string) => {
             const action = actions[type];
             const callback = (payload: any) => {
                 action.call(this, payload);
@@ -94,7 +92,7 @@ export default class UC_ViewModel extends Events {
         action(payload);
     }
 
-    public dispatch = (type: string, payload?: any) => {
+    public dispatch(type: string, payload?: any): void {
         if (!type || type === '') {
             return;
         }
@@ -108,9 +106,9 @@ export default class UC_ViewModel extends Events {
         } else {
             this.call(type, payload);
         }
-    };
+    }
 
-    public registerView(reactiveView: any) {
+    public registerView(reactiveView: any): void {
         if (this.reactiveView === null) {
             this.reactiveView = reactiveView;
         }

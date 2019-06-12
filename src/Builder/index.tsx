@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
-import { I_UC_Builder } from '../Interface/I_UC_Builder';
-import { I_UC_ViewModel } from '../Interface/I_UC_ViewModel';
-import { I_UC_Model } from '../Interface/I_UC_Model';
+import { IBuilderParam } from '../Interface/I_UC_Builder';
+import { IViewModel, IViewModelParams } from '../Interface/I_UC_ViewModel';
 import { IBroadcastSubject, ISignal } from '../Interface/I_Broadcast';
 
-import UC_Model from '../Model';
-import UC_ViewModel from '../ViewModel';
+import UCModel from '../Model';
+import UCViewModel from '../ViewModel';
 import { connect } from '../View';
 
 export default class Builder {
-    public readonly __NameSpace__: string = '';
-    private readonly __Configs__: I_UC_Builder | any = {};
-    protected UCModel: any = null;
-    protected UCViewModel: any = null;
-
+    protected readonly __NAME_SPACE__: string = '';
+    protected UC_VIEW_MODEL: IViewModel;
     protected observedModel: any = null;
+
+    private readonly __CONFIG__: IBuilderParam;
     private renderComponent: Component;
     private wrappedComponent: Component = null;
     private iteratorRender: any = this.doRender();
@@ -22,53 +20,51 @@ export default class Builder {
     private signal: ISignal;
 
     public constructor(
-        builderParams: I_UC_Builder,
+        builderParams: IBuilderParam,
         tunnel: (builderName: string, actionName: string, payload?: any) => void,
         builderSignal: ISignal
     ) {
         if (!builderParams) {
             return;
         }
-        this.__Configs__ = builderParams;
-        this.__NameSpace__ = this.__Configs__.namespace;
+        this.__CONFIG__ = builderParams;
+        this.__NAME_SPACE__ = this.__CONFIG__.namespace;
         this.tunnel = tunnel;
         this.signal = builderSignal;
-        if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
-            this.doSetup(this.__Configs__.subscriptions.setup);
+        if (this.__CONFIG__.subscriptions && this.__CONFIG__.subscriptions.setup) {
+            this.doSetup(this.__CONFIG__.subscriptions.setup);
         } else {
-            this.__Configs__.model = new UC_Model(this.__Configs__.model);
+            this.__CONFIG__.model = new UCModel(this.__CONFIG__.model);
         }
-        const viewModelParams: I_UC_ViewModel = {
-            state: this.__Configs__.state,
-            actions: this.__Configs__.actions
+        const viewModelParams: IViewModelParams = {
+            state: this.__CONFIG__.state,
+            actions: this.__CONFIG__.actions
         };
-        this.UCViewModel = new UC_ViewModel(viewModelParams, this.call);
+        this.UC_VIEW_MODEL = new UCViewModel(viewModelParams, this.call);
     }
-    private doSetup(setup: any) {
+    private doSetup(setup: () => Promise<any>) {
         return setup()
             .then((res: any) => {
-                this.__Configs__.model = new UC_Model(res).observedModel;
-                this.UCViewModel.init(this.__Configs__.model);
+                this.__CONFIG__.model = new UCModel(res).observedModel;
+                this.UC_VIEW_MODEL.init(this.__CONFIG__.model);
                 this.iteratorRender.next();
-                // this.iteratorStart.next();
             })
             .catch((err: any) => {
                 console.log(err);
             });
     }
     private *doRender() {
-        yield this.wrappedComponent.setState({ vm: this.UCViewModel });
-        yield this.UCViewModel.reactiveView.setState({ vm: this.UCViewModel });
+        yield this.UC_VIEW_MODEL.reactiveView.setState({ vm: this.UC_VIEW_MODEL });
     }
 
     protected render(renderComponent: Component): Component {
         this.renderComponent = renderComponent;
         const StoreWrapper: Component = connect(
-            this.UCViewModel,
+            this.UC_VIEW_MODEL,
             this.renderComponent
         );
         this.wrappedComponent = <StoreWrapper />;
-        if (this.__Configs__.subscriptions && this.__Configs__.subscriptions.setup) {
+        if (this.__CONFIG__.subscriptions && this.__CONFIG__.subscriptions.setup) {
             console.log('wait autoRender');
         } else {
             this.iteratorRender.next();
@@ -76,33 +72,33 @@ export default class Builder {
     }
 
     protected replaceModel(modelData: any) {
-        this.__Configs__.model = new UC_Model(modelData).observedModel;
-        this.UCViewModel.init(this.__Configs__.model);
+        this.__CONFIG__.model = new UCModel(modelData).observedModel;
+        this.UC_VIEW_MODEL.init(this.__CONFIG__.model);
     }
 
     protected call(dispatchTarget: string, payload?: any): void {
         const builderName: string = dispatchTarget.split('/')[0];
         const actionName: string = dispatchTarget.split('/')[1];
 
-        if (builderName === this.__NameSpace__) {
-            this.UCViewModel.dispatch(payload);
+        if (builderName === this.__NAME_SPACE__) {
+            this.UC_VIEW_MODEL.dispatch(payload);
         } else {
             this.tunnel(builderName, actionName, payload);
         }
     }
 
-    protected doSubscribe(behaviorName: string): IBroadcastSubject | undefined {
-        if (behaviorName) {
-            return this.signal.doSubscribe(behaviorName);
-        }
-        return undefined;
-    }
+    // protected doSubscribe(behaviorName: string): IBroadcastSubject | undefined {
+    //     if (behaviorName) {
+    //         return this.signal.doSubscribe(behaviorName);
+    //     }
+    //     return undefined;
+    // }
 
-    protected subscribe(behaviorName: string, behavior: (p: IBroadcastSubject) => void): void {
-        this.signal.subscribe(behaviorName, behavior);
-    }
+    // protected subscribe(behaviorName: string, behavior: (p: IBroadcastSubject) => void): void {
+    //     this.signal.subscribe(behaviorName, behavior);
+    // }
 
-    protected unSubscribe(behaviorName: string) {
-        this.signal.unSubscribe(behaviorName);
-    }
+    // protected unSubscribe(behaviorName: string) {
+    //     this.signal.unSubscribe(behaviorName);
+    // }
 }

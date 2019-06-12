@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../Core/index");
-class UC_Model {
+class UCModel {
     constructor(modelData) {
         this.observedModel = null;
         if (!modelData) {
@@ -25,6 +25,5 @@ class UC_Model {
         });
         return obsField;
     }
-    replaceModel() { }
 }
-exports.default = UC_Model;
+exports.default = UCModel;
