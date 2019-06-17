@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { IBuilderParam } from '../Interface/I_UC_Builder';
 import { IViewModel, IViewModelParams } from '../Interface/I_UC_ViewModel';
 import { IBroadcastSubject, ISignal } from '../Interface/I_Broadcast';
+import { ELogType } from '../Interface/I_UC_Log';
 
+import { emitLog } from '../Util/log';
 import UCModel from '../Model';
 import UCViewModel from '../ViewModel';
 import { connect } from '../View';
@@ -41,6 +43,7 @@ export default class Builder {
             actions: this.__CONFIG__.actions
         };
         this.UC_VIEW_MODEL = new UCViewModel(viewModelParams, this.call);
+        emitLog(ELogType.lifeCycle, 'builder init finish');
     }
     private doSetup(setup: () => Promise<any>) {
         return setup()
@@ -48,6 +51,7 @@ export default class Builder {
                 this.__CONFIG__.model = new UCModel(res).observedModel;
                 this.UC_VIEW_MODEL.init(this.__CONFIG__.model);
                 this.iteratorRender.next();
+                emitLog(ELogType.lifeCycle, 'doSetup');
             })
             .catch((err: any) => {
                 console.log(err);
@@ -55,6 +59,7 @@ export default class Builder {
     }
     private *doRender() {
         yield this.UC_VIEW_MODEL.reactiveView.setState({ vm: this.UC_VIEW_MODEL });
+        emitLog(ELogType.lifeCycle, 'doRender');
     }
 
     protected render(renderComponent: Component): Component {
@@ -69,6 +74,7 @@ export default class Builder {
         } else {
             this.iteratorRender.next();
         }
+        emitLog(ELogType.lifeCycle, 'render');
     }
 
     protected replaceModel(modelData: any) {

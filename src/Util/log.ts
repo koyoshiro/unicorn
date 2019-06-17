@@ -1,10 +1,11 @@
 import { ELogType, ILog } from '../Interface/I_UC_Log';
 
-const emitLog = (emitLogType: ELogType, emitLogInfo: string): void => {
+const emitLog = (emitLogType: ELogType, emitLogInfo: string, emitLogDesc?: any): void => {
     const log: ILog = {
         logType: emitLogType,
         logTime: Date.now(),
-        logInfo: emitLogInfo
+        logInfo: emitLogInfo,
+        logDesc: emitLogDesc
     };
     /*
      * todo 环境判断
