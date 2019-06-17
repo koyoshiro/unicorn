@@ -17,7 +17,7 @@ export default class Unicorn {
 
     public builder(builderParams: IBuilderParam) {
         if (!builderParams || !builderParams.namespace || this.__BUILD_RECORD__.has(builderParams.namespace)) {
-            emitLog(ELogType.lifeCycle, 'builder error');
+            emitLog(ELogType.error, 'builder error');
             return null;
         }
         this.__BUILD_RECORD__.add(builderParams.namespace);
@@ -26,15 +26,24 @@ export default class Unicorn {
             key: builderParams.namespace,
             instance: builderInstance
         });
+        emitLog(ELogType.lifeCycle, 'builder successful', {
+            namespace: builderParams.namespace
+        });
         return builderInstance;
     }
 
     private tunnel(builderName: string, actionName: string, payload?: any): void {
         if (!builderName || !actionName || !this.__BUILD_RECORD__.has(builderName)) {
+            emitLog(ELogType.error, 'tunnel error');
             return;
         }
         const builderChannel = this.__BUILD_STACK__.find((builder: any) => builder.key === builderName).instance;
         builderChannel.UCViewModel.dispatch(actionName, payload);
+        emitLog(ELogType.functionCall, 'tunnel', {
+            builderName,
+            actionName,
+            payload
+        });
     }
 
     private signal(): ISignal {
