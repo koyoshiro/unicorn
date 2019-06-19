@@ -33,8 +33,8 @@ export default class Builder {
         this.__NAME_SPACE__ = this.__CONFIG__.namespace;
         this.tunnel = tunnel;
         this.signal = builderSignal;
-        if (this.__CONFIG__.subscriptions && this.__CONFIG__.subscriptions.setup) {
-            this.doSetup(this.__CONFIG__.subscriptions.setup);
+        if (this.__CONFIG__.effects && this.__CONFIG__.effects.fetchServer) {
+            this.doSetup(this.__CONFIG__.effects.fetchServer);
         } else {
             this.__CONFIG__.model = new UCModel(this.__CONFIG__.model);
         }
@@ -43,6 +43,7 @@ export default class Builder {
             actions: this.__CONFIG__.actions
         };
         this.UC_VIEW_MODEL = new UCViewModel(viewModelParams, this.call);
+        this.doSubscribe();
         emitLog(ELogType.lifeCycle, 'builder init finish');
     }
     private doSetup(setup: () => Promise<any>) {
@@ -60,6 +61,14 @@ export default class Builder {
     private *doRender() {
         yield this.UC_VIEW_MODEL.reactiveView.setState({ vm: this.UC_VIEW_MODEL });
         emitLog(ELogType.lifeCycle, 'doRender');
+    }
+    private doSubscribe() {
+        if (this.__CONFIG__.subscriptions) {
+            Object.keys(this.__CONFIG__.subscriptions).forEach((behaviorName: string) => {
+                const behavior: IBroadcastSubject = (IBroadcastSubject)this.__CONFIG__.subscriptions[behaviorName];
+                this.signal.subscribe(behaviorName, behavior);
+            });
+        }
     }
 
     protected render(renderComponent: Component): Component {
@@ -93,18 +102,18 @@ export default class Builder {
         }
     }
 
-    // protected doSubscribe(behaviorName: string): IBroadcastSubject | undefined {
-    //     if (behaviorName) {
-    //         return this.signal.doSubscribe(behaviorName);
-    //     }
-    //     return undefined;
-    // }
+    protected doSubscribe(behaviorName: string): void {
+        if (behaviorName) {
+            return this.signal.doSubscribe(behaviorName);
+        }
+        return undefined;
+    }
+
+    protected unSubscribe(behaviorName: string) {
+        this.signal.unSubscribe(behaviorName);
+    }
 
     // protected subscribe(behaviorName: string, behavior: (p: IBroadcastSubject) => void): void {
     //     this.signal.subscribe(behaviorName, behavior);
-    // }
-
-    // protected unSubscribe(behaviorName: string) {
-    //     this.signal.unSubscribe(behaviorName);
     // }
 }

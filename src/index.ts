@@ -48,12 +48,14 @@ export default class Unicorn {
 
     private signal(): ISignal {
         const runSubscribe = (behaviorName: string): void => {
-            const broadcastSubscribe: IBroadcastSubject | undefined = this.__BROAD_CAST__.getSubscribe(behaviorName);
-            if (broadcastSubscribe) {
-                const builderChannel = this.__BUILD_STACK__.find(
-                    (builder: any) => builder.key === broadcastSubscribe.builderName
-                ).instance;
-                builderChannel.UCViewModel.dispatch(broadcastSubscribe.actionName, broadcastSubscribe.payload);
+            const behaviorHeap: IBroadcastSubject[] | undefined = this.__BROAD_CAST__.getSubscribe(behaviorName);
+            if (behaviorHeap) {
+                behaviorHeap.forEach((behavior: IBroadcastSubject) => {
+                    const builderChannel = this.__BUILD_STACK__.find(
+                        (builder: any) => builder.key === behavior.builderName
+                    ).instance;
+                    builderChannel.UCViewModel.dispatch(behavior.actionName, behavior.payload);
+                });
             }
         };
         return {

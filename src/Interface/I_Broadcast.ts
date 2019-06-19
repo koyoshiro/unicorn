@@ -7,7 +7,7 @@ export interface IBroadcastSubject {
 export interface IBroadcast {
     subscribe: (behaviorName: string, behavior: IBroadcastSubject) => void;
     unSubscribe: (behaviorName: string) => void;
-    getSubscribe: (behaviorName: string) => IBroadcastSubject | undefined;
+    getSubscribe: (behaviorName: string) => IBroadcastSubject[] | undefined;
 }
 
 export interface ISignal {
