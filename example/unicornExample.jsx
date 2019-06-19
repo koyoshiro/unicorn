@@ -4,7 +4,7 @@ import Unicorn from '../Unicorn';
 const UC = new Unicorn();
 const ucA = UC.builder({
     namespace: 'ucA',
-    model: {},
+    data: {},
     state: {
         arrayVal: {
             map: obm => {
@@ -34,7 +34,6 @@ const ucA = UC.builder({
     actions: {
         // payload 需要传递的信息
         add(payload) {
-            debugger;
             this.observedModel.array[0].val += payload;
         },
         // payload 需要传递的信息
@@ -49,14 +48,7 @@ const ucA = UC.builder({
         asyncRequire() {}
     },
     effects: {
-        fetchServer(requireParams) {
-            const data = ajax.require(requireParams);
-            return data;
-            // const user = yield call(fetchUser, id);      // yield put({ type: 'saveUser', payload: user });
-        }
-    },
-    subscriptions: {
-        setup() {
+        fetchServer() {
             const inputData = {
                 num: 1,
                 str: 'example',
@@ -84,13 +76,13 @@ const ucA = UC.builder({
                     resolve(inputData);
                 }, 2000);
             });
-        },
-        keyEvent({ dispatch }) {
-            key('⌘+up, ctrl+up', () => {
-                dispatch({
-                    type: 'add'
-                });
-            });
+        }
+    },
+    subscriptions: {
+        subName: {
+            builderName: '',
+            actionName: '',
+            payload: ''
         }
     }
 });
