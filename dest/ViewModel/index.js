@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Core_1 = require("../Core");
 // import { autoRun } from '../Core';
 class UCViewModel {
-    constructor(vmParam, call) {
+    constructor(vmParam, call, signal) {
         this.actions = {};
         this.reactiveView = null;
         this.store = {};
@@ -15,6 +15,7 @@ class UCViewModel {
         }
         this.viewModelParams = vmParam;
         this.call = call;
+        this.signal = signal;
     }
     init(observedModel) {
         this.observedModel = observedModel;

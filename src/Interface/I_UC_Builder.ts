@@ -5,8 +5,8 @@ export interface IState {
     onComputedUpdate: () => void;
 }
 
-export interface ISubscription {
-    setup?: () => Promise<any>;
+export interface IEffect {
+    fetchServer?: () => Promise<any>;
 }
 
 export interface IBuilderParam {
@@ -14,8 +14,10 @@ export interface IBuilderParam {
     model?: {};
     state: any;
     actions: any;
-    effects?: any;
-    subscriptions?: ISubscription;
+    effects?: IEffect;
+    subscriptions?: {
+        [_: string]: IBroadcastSubject
+    };
 }
 
 export interface IBuilder {

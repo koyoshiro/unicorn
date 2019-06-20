@@ -42,7 +42,7 @@ export default class Builder {
             state: this.__CONFIG__.state,
             actions: this.__CONFIG__.actions
         };
-        this.UC_VIEW_MODEL = new UCViewModel(viewModelParams, this.call);
+        this.UC_VIEW_MODEL = new UCViewModel(viewModelParams, this.call,this.signal);
         this.doSubscribe();
         emitLog(ELogType.lifeCycle, 'builder init finish');
     }
@@ -64,8 +64,9 @@ export default class Builder {
     }
     private doSubscribe() {
         if (this.__CONFIG__.subscriptions) {
-            Object.keys(this.__CONFIG__.subscriptions).forEach((behaviorName: string) => {
-                const behavior: IBroadcastSubject = (IBroadcastSubject)this.__CONFIG__.subscriptions[behaviorName];
+            const subscriptions = this.__CONFIG__.subscriptions;
+            Object.keys(subscriptions).forEach((behaviorName: string) => {
+                const behavior: IBroadcastSubject = subscriptions[behaviorName];
                 this.signal.subscribe(behaviorName, behavior);
             });
         }
@@ -102,7 +103,7 @@ export default class Builder {
         }
     }
 
-    protected doSubscribe(behaviorName: string): void {
+    protected runSubscribe(behaviorName: string): void {
         if (behaviorName) {
             return this.signal.doSubscribe(behaviorName);
         }
@@ -112,8 +113,4 @@ export default class Builder {
     protected unSubscribe(behaviorName: string) {
         this.signal.unSubscribe(behaviorName);
     }
-
-    // protected subscribe(behaviorName: string, behavior: (p: IBroadcastSubject) => void): void {
-    //     this.signal.subscribe(behaviorName, behavior);
-    // }
 }

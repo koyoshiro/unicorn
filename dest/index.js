@@ -13,7 +13,7 @@ class Unicorn {
     }
     builder(builderParams) {
         if (!builderParams || !builderParams.namespace || this.__BUILD_RECORD__.has(builderParams.namespace)) {
-            log_1.emitLog(I_UC_Log_1.ELogType.lifeCycle, 'builder error');
+            log_1.emitLog(I_UC_Log_1.ELogType.error, 'builder error');
             return null;
         }
         this.__BUILD_RECORD__.add(builderParams.namespace);
@@ -22,21 +22,32 @@ class Unicorn {
             key: builderParams.namespace,
             instance: builderInstance
         });
+        log_1.emitLog(I_UC_Log_1.ELogType.lifeCycle, 'builder successful', {
+            namespace: builderParams.namespace
+        });
         return builderInstance;
     }
     tunnel(builderName, actionName, payload) {
         if (!builderName || !actionName || !this.__BUILD_RECORD__.has(builderName)) {
+            log_1.emitLog(I_UC_Log_1.ELogType.error, 'tunnel error');
             return;
         }
         const builderChannel = this.__BUILD_STACK__.find((builder) => builder.key === builderName).instance;
         builderChannel.UCViewModel.dispatch(actionName, payload);
+        log_1.emitLog(I_UC_Log_1.ELogType.functionCall, 'tunnel', {
+            builderName,
+            actionName,
+            payload
+        });
     }
     signal() {
         const runSubscribe = (behaviorName) => {
-            const broadcastSubscribe = this.__BROAD_CAST__.getSubscribe(behaviorName);
-            if (broadcastSubscribe) {
-                const builderChannel = this.__BUILD_STACK__.find((builder) => builder.key === broadcastSubscribe.builderName).instance;
-                builderChannel.UCViewModel.dispatch(broadcastSubscribe.actionName, broadcastSubscribe.payload);
+            const behaviorHeap = this.__BROAD_CAST__.getSubscribe(behaviorName);
+            if (behaviorHeap) {
+                behaviorHeap.forEach((behavior) => {
+                    const builderChannel = this.__BUILD_STACK__.find((builder) => builder.key === behavior.builderName).instance;
+                    builderChannel.UCViewModel.dispatch(behavior.actionName, behavior.payload);
+                });
             }
         };
         return {
