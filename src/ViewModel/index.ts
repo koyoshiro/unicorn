@@ -1,22 +1,25 @@
 import { IViewModel, IViewModelParams } from '../Interface/I_UC_ViewModel';
+import { IBroadcastSubject, ISignal } from '../Interface/I_Broadcast';
 import { Watcher } from '../Core';
 // import { autoRun } from '../Core';
 
 export default class UCViewModel implements IViewModel {
     private call: (dispatchTarget: string, payload?: any) => void;
+    private signal: ISignal;
     private actions: any = {};
     public reactiveView: any = null;
     public store: any = {};
     private viewModelParams: IViewModelParams = { state: {} };
     public observedModel: any = {};
 
-    constructor(vmParam: IViewModelParams, call: (dispatchTarget: string, payload?: any) => void) {
+    constructor(vmParam: IViewModelParams, call: (dispatchTarget: string, payload?: any) => void, signal: ISignal) {
         if (!vmParam) {
             console.error('vm params is undefined');
             return;
         }
         this.viewModelParams = vmParam;
         this.call = call;
+        this.signal = signal;
     }
 
     public init(observedModel: any): void {
