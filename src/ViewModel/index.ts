@@ -1,5 +1,5 @@
 import { IViewModel, IViewModelParams } from '../Interface/I_UC_ViewModel';
-import { IBroadcastSubject, ISignal } from '../Interface/I_Broadcast';
+import { ISignal } from '../Interface/I_Broadcast';
 import { Watcher } from '../Core';
 // import { autoRun } from '../Core';
 
