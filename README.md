@@ -5,5 +5,7 @@
 - [x] 接入Builder之间的相互调用
 - [x] 接入Builder广播系统
 - [x] Interface补全
-- [ ] 整理打包Jetpack
+- [x] 整理打包Jetpack
 - [ ] 接入React Native
+- [ ] 投入生产环境
+- [ ] 孵化成功为开源项目
