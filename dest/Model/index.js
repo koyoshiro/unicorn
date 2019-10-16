@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = require("../Core/index");
+const unicorn_core_1 = require("@vanir/unicorn-core");
 class UCModel {
     constructor(modelData) {
         this.observedModel = null;
@@ -15,7 +15,7 @@ class UCModel {
     }
     recursiveDataSource(dataSource) {
         // 对数据结构中统一处理为Proxy类型
-        const obsField = new index_1.Observable(dataSource);
+        const obsField = new unicorn_core_1.Observable(dataSource);
         // 遍历Proxy内容中的每个字段
         Object.keys(obsField).forEach((key) => {
             // 若为object或array则递归

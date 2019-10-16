@@ -1,5 +1,5 @@
 import { IModel } from '../Interface/I_UC_Model';
-import { Observable } from '../Core/index';
+import { Observable } from '@vanir/unicorn-core';
 export default class UCModel implements IModel {
     public observedModel: any = null;
 
