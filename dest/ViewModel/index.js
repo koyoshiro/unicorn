@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Core_1 = require("../Core");
+const unicorn_core_1 = require("@vanir/unicorn-core");
 // import { autoRun } from '../Core';
 class UCViewModel {
     constructor(vmParam, call, signal) {
@@ -33,7 +33,7 @@ class UCViewModel {
             }
             */
             // 根据state[key].map去递归生成watcher实例
-            const watcherInstance = new Core_1.Watcher(state[key].map(this.observedModel), key, state[key].handler, (val) => {
+            const watcherInstance = new unicorn_core_1.Watcher(state[key].map(this.observedModel), key, state[key].handler, (val) => {
                 state[key].onComputedUpdate(val);
                 this.store[key] = val;
                 this.reactiveView.setState({ vm: this });
@@ -42,7 +42,7 @@ class UCViewModel {
         });
         // 递归时需要实现所有非object和array 的 直接可以使用的值
         Object.keys(this.observedModel).forEach((key) => {
-            const baseWatcherInstance = new Core_1.Watcher(this.observedModel, key, () => {
+            const baseWatcherInstance = new unicorn_core_1.Watcher(this.observedModel, key, () => {
                 return this.observedModel[key];
             }, (val) => {
                 this.store[key] = val;

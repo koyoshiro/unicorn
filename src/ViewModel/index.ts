@@ -1,6 +1,6 @@
 import { IViewModel, IViewModelParams } from '../Interface/I_UC_ViewModel';
-import { IBroadcastSubject, ISignal } from '../Interface/I_Broadcast';
-import { Watcher } from '../Core';
+import { ISignal } from '../Interface/I_Broadcast';
+import { Watcher } from '@vanir/unicorn-core';
 // import { autoRun } from '../Core';
 
 export default class UCViewModel implements IViewModel {
